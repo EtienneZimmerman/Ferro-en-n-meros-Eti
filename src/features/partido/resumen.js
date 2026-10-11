@@ -88,7 +88,7 @@ export function initResumen() {
   } else {
     // La previa de esta fecha todavía no está lista: se ocultan los bloques que dependen del pronóstico.
     $(".pv-pron").hidden = true;
-    ["#pv-fwcaja", "#pv-esc-caja", "#pv-metodo"].forEach(id => { $(id).hidden = true; });
+    ["#pv-fwcaja", "#pv-esc-caja", "#pv-metodo", "#pv-quien1"].forEach(id => { $(id).hidden = true; });
     $("#aviso-previa").hidden = false;
   }
   // chicanas rotativas

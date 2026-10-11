@@ -136,6 +136,10 @@ export function corregir(s, correccion) {
   if (correccion.gl != null) c.gl = correccion.gl;
   if (correccion.gv != null) c.gv = correccion.gv;
   if (correccion.arbitro) c.arbitro = correccion.arbitro;
+  if (correccion.golesRival) {   // goles del rival que la síntesis no lista (con minuto aproximado)
+    const lado = c.local === FERRO || /ferro carril oeste/i.test(c.local) ? "visitante" : "local";
+    c.eventos = { ...c.eventos, [lado]: { ...c.eventos[lado], goles: [...c.eventos[lado].goles, ...correccion.golesRival.map(g => ({ min: g.min, mitad: g.mitad, t: g.mitad === "st" ? 45 + g.min : g.min, nombre: "(sin dato)", penal: false, ec: false }))] } };
+  }
   return c;
 }
 

@@ -55,14 +55,19 @@ Una tarea de GitHub Actions (`.github/workflows/actualizar-datos.yml`) corre **c
 síntesis de un partido nuevo y si FútbolTotal actualizó la tabla. Si hay algo, guarda los datos y vuelve a publicar el sitio.
 También se puede lanzar a mano: pestaña Actions → «Actualizar datos» → Run workflow.
 
-**Qué actualiza solo** (`scripts/actualizar.mjs`): partidos, participación de cada jugador (minutos, goles, tarjetas),
-estadísticas del plantel, rendimiento por situación, goles por franja y tabla de posiciones.
+**Qué actualiza solo** (`scripts/actualizar.mjs`):
+- Partidos, participación de cada jugador (minutos, goles, tarjetas), estadísticas del plantel, rendimiento por situación y goles por franja.
+- Tabla de posiciones (FútbolTotal).
+- Con 2025 y 2024 leídos de las mismas síntesis de FerroWeb (se guardan una sola vez en `datos-fuente/temporadas.json`):
+  - **Laboratorio:** forma, «y si al minuto…», mapa de minutos 2025 contra 2026, duplas y tridentes, impacto del banco, tal fecha como esta, rivales favoritos y bestias negras, cábalas.
+  - **Árbitros:** tabla 2025-26 y las estadísticas del árbitro designado.
+  - **La última vez que…**, **histórico 2025 contra 2026** (temporadas, evolución, historial por rival) y **escenarios del primer puesto**.
+- El calendario (quién sigue, cuándo y dónde) se lee de los datos de `proximo.json`; hoy lo carga la tarea editorial.
 
-**Qué NO actualiza** (sigue siendo trabajo editorial o de modelos): hallazgos y novedades, calendario, pronóstico FW,
-escenarios, claves, árbitro designado, cruce de planteles, laboratorio, histórico 2025 y fotos. Cuando entra un partido nuevo,
-`datos-fuente/estado.json` marca `pendiente_editorial: true`. Mientras esas partes no se refresquen, el sitio **no muestra** el
-pronóstico, los escenarios, las claves ni la calculadora del partido anterior como si fueran del siguiente (ver `previaAlDia`
-en `src/ctx.js`): muestra un aviso y vuelve solo cuando esos datos son de la fecha correcta.
+**Qué NO actualiza** (texto o modelos que necesitan criterio): hallazgos y novedades, calendario y horarios, pronóstico FW y su historial, claves, simulación del primer puesto, árbitro designado, pizarra, chicanas, previa en números, cruce de planteles y termómetro de crónicas.
+Cuando entra un partido nuevo, `datos-fuente/estado.json` marca `pendiente_editorial: true`. Mientras esas partes no se refresquen, el sitio
+**no muestra** el pronóstico, las claves ni lo que depende de ellas como si fueran del partido siguiente (ver `previaAlDia` y
+`escenariosAlDia` en `src/ctx.js`): muestra un aviso y vuelve solo cuando esos datos son de la fecha correcta.
 
 **Cómo se cuida la calidad.** Antes de guardar un partido nuevo se comprueba que:
 - el marcador coincida con los goles listados de cada equipo,
@@ -74,7 +79,8 @@ datos buenos. Si el error es de FerroWeb, se corrige en `datos-fuente/correccion
 `view=` de la URL) y se vuelve a lanzar la tarea. Ejemplo: la síntesis de F6 dice 0-0 en el encabezado pero lista 2 goles.
 
 **Otros archivos de `datos-fuente/`**
-- `goles.json`: minuto de cada gol de cada partido (se usa para las franjas y «abriendo el marcador»). Se arma solo.
+- `detalle.json`: por partido, minuto y autor de cada gol, ingresos de suplentes y tarjetas de Ferro. Se arma solo.
+- `temporadas.json`: 2025 y 2024 leídos de FerroWeb. `alias-equipos.json`: nombres que FerroWeb escribe distinto según la temporada.
 - `ajustes-jugadores.json`: ajustes manuales a las estadísticas, con el motivo. Revisar de vez en cuando.
 - `estado.json`: última fecha cargada y si falta la parte editorial.
 
@@ -82,7 +88,9 @@ datos buenos. Si el error es de FerroWeb, se corrige en `datos-fuente/correccion
 ```
 npm test                      # pruebas del parser con síntesis reales
 npm run datos:actualizar      # lo mismo que hace la tarea (agregar -- --seco para no escribir nada)
-npm run datos:verificar       # reconstruye todo desde FerroWeb y lo compara con lo cargado
+npm run datos:verificar       # reconstruye los partidos desde FerroWeb y los compara con lo cargado
+node scripts/verificar-editorial.mjs      # lo mismo para laboratorio, árbitros, histórico y escenarios
+node scripts/actualizar.mjs --temporadas  # vuelve a leer 2025 y 2024
 node scripts/actualizar.mjs --reconstruir   # vuelve a leer todas las síntesis y rehace los datos
 ```
 

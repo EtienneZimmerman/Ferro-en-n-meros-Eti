@@ -1,5 +1,5 @@
 import { tarjeta } from "../../components/tarjeta.js";
-import { DATA, prox, TODOS, previaAlDia } from "../../ctx.js";
+import { DATA, prox, TODOS, previaAlDia, escenariosAlDia } from "../../ctx.js";
 import { tabla } from "../../lib/charts.js";
 import { FERRO } from "../../lib/consts.js";
 import { $, el, S, limitar } from "../../lib/dom.js";
@@ -79,7 +79,7 @@ export function previa() {
     box.append(fo);
   }
   // escenarios
-  const E = previaAlDia ? DATA.escenarios : null; const c = $("#c-esc"); c.textContent = "";
+  const E = escenariosAlDia ? DATA.escenarios : null; const c = $("#c-esc"); c.textContent = "";
   if (E) {
   $("#esc-nota").textContent = `Puntos actuales y máximo posible si ganan todo lo que les queda. Necesitamos ${E.necesita_para_asegurar} puntos para asegurar el 1° sin depender de nadie.`;
   const filas = [{ equipo: "Ferro", pts: E.ferro, maximo: E.ferro_max, yo: true }, ...E.perseguidores.map(p => ({ equipo: p.equipo.replace("Deportivo ", ""), pts: p.pts, maximo: p.maximo }))];

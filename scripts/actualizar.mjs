@@ -3,9 +3,11 @@
 //   node scripts/actualizar.mjs                 busca partidos nuevos en FerroWeb y actualiza public/data/*.json
 //   node scripts/actualizar.mjs --seco          hace todo pero no escribe archivos
 //   node scripts/actualizar.mjs --reconstruir   vuelve a leer TODAS las síntesis y rehace los datos (aplica correcciones)
+//   node scripts/actualizar.mjs --temporadas    vuelve a leer 2025 y 2024 (normalmente se leen una sola vez)
 //
-// Qué NO toca (es trabajo editorial o de modelos): hallazgos, novedades, calendario, pronóstico FW, escenarios,
-// árbitro designado, cruce de planteles, laboratorio e histórico 2025. Ver README.
+// También recalcula, con 2025 y 2024 leídos de FerroWeb: laboratorio, árbitros, «la última vez que…», histórico y escenarios.
+// Qué NO toca (es trabajo editorial o de modelos): hallazgos y novedades, calendario, pronóstico FW, claves, árbitro
+// designado, cruce de planteles y crónicas. Ver README.
 //
 // Reglas de seguridad: si un partido nuevo no se puede leer o sus números no cierran (marcador contra goles listados,
 // 11 titulares, cambios coherentes), NO se guarda nada y el script falla con un mensaje claro. Los errores de FerroWeb
@@ -15,9 +17,11 @@ import { bajarSintesis, parseSintesis, corregir, FERRO } from "./lib/ferroweb.mj
 import { procesarPartido, acumularPuntos, estadisticasJugadores, rendimiento, franjas } from "./lib/derive.mjs";
 import { bajarTabla, URL_TABLA } from "./lib/futboltotal.mjs";
 import { mismoEquipo, equipoCanonico, ahoraArgentina } from "./lib/texto.mjs";
+import { bajarTemporada } from "./lib/temporadas.mjs";
+import * as C from "./lib/calculos.mjs";
 
 const args = new Set(process.argv.slice(2));
-const SECO = args.has("--seco"), RECONSTRUIR = args.has("--reconstruir");
+const SECO = args.has("--seco"), RECONSTRUIR = args.has("--reconstruir"), RELEER_TEMPORADAS = args.has("--temporadas");
 const ruta = (r) => new URL(`../${r}`, import.meta.url);
 const leer = (r, def) => existsSync(ruta(r)) ? JSON.parse(readFileSync(ruta(r), "utf8")) : def;
 const serializar = (o) => JSON.stringify(o);
@@ -121,12 +125,53 @@ try {
   }
 } catch (e) { aviso(`No se pudo actualizar la tabla: ${e.message}`); }
 
+
+// ---------- cálculos que cruzan temporadas (laboratorio, árbitros, última vez, histórico, escenarios) ----------
+let T = leer("datos-fuente/temporadas.json", null);
+if (RELEER_TEMPORADAS || !T || !T[2025]?.[0]?.tarjetas) {
+  console.log("Leyendo 2025 y 2024 desde FerroWeb (se hace una sola vez)…");
+  const hist = dj ? dj.jugadores.map(j => j.jugador) : [];
+  const conocidosJ = [...new Set([...hist, ...(de.historico?.jugadores ?? []).map(j => j.jugador)])];
+  const lab0 = leer("public/data/lab.json").lab;
+  const rivalesK = [...new Set([...partidos.map(p => p.rival), ...(de.historico?.h2h ?? []).map(h => h.rival), ...lab0.rivales.favoritos.map(x => x.rival), ...lab0.rivales.bestias.map(x => x.rival), ...(lab0.tal_fecha?.lista ?? []).map(x => x.rival), ...(dprox.calendario?.proximos ?? []).map(x => x.rival)])];
+  T = {};
+  for (const a of [2025, 2024]) T[a] = await bajarTemporada(a, { conocidos: conocidosJ, rivales: rivalesK, correcciones: CORR, alias: leer("datos-fuente/alias-equipos.json", {}), aviso });
+}
+const P26 = C.unificar2026(P, participaciones, DETALLE), P25 = C.unificarAnterior(T[2025]), P24 = C.unificarAnterior(T[2024]);
+const arbitrosConocidos = [...new Set(P26.map(p => p.arbitro))];
+for (const p of [...P25, ...P24]) { p.arbitro = C.canonicoArbitro(p.arbitro, arbitrosConocidos); if (!arbitrosConocidos.includes(p.arbitro)) arbitrosConocidos.push(p.arbitro); }
+
+const labViejo = leer("public/data/lab.json").lab, hallViejo = leer("public/data/hallazgos.json");
+const proxPendiente = (dprox.calendario?.proximos ?? []).find(x => x.fecha > ultimaFecha);
+const arb = C.arbitros([...P25, ...P26], dprox.arbitros?.designado_nombre);
+const minutos = C.labMinutos(P26, P25), duplas = C.labDuplas(P26), rivalesLab = C.labRivales([...P24, ...P25, ...P26], [2024, 2025, 2026]);
+const labNuevo = {
+  ...labViejo,
+  minutos: { 2026: minutos[2026], 2025: minutos[2025] }, estados: C.labEstados(P26), forma: C.labForma(P26),
+  forma_rival: C.labFormaRival(proxPendiente) ?? labViejo.forma_rival, duplas, banco: C.labBanco(P26),
+  tal_fecha: C.labTalFecha(proxPendiente ? proxPendiente.fecha : ultimaFecha + 1, [P25, P24]), cabalas: C.labCabalas(P26), rivales: rivalesLab,
+};
+const tablaAlDia = fuente.actualizada === `tras la fecha ${ultimaFecha}`;
+const proxNuevo = {
+  ...dprox,
+  arbitros: { ...dprox.arbitros, ...arb },
+  // Los escenarios parten de los puntos de la tabla: si FútbolTotal todavía no la actualizó, se deja lo anterior (el sitio lo detecta por tras_fecha).
+  escenarios: tablaAlDia ? { ...C.escenarios(tabla, dprox.calendario, ultimaFecha, FERRO), tras_fecha: ultimaFecha } : dprox.escenarios,
+};
+const hallNuevo = { ...hallViejo, ultimas: C.ultimas([...P25, ...P26]) };
+const historicoNuevo = { ...de.historico, ...C.historico(P26, P25, de.historico) };
+equipoNuevo.historico = historicoNuevo;
+
 // ---------- escritura ----------
 const salidas = {
   "public/data/partidos.json": { partidos: P, participaciones },
   "public/data/jugadores.json": { jugadores: J },
   "public/data/equipo.json": equipoNuevo,
   "datos-fuente/detalle.json": DETALLE,
+  "datos-fuente/temporadas.json": T,
+  "public/data/lab.json": { lab: labNuevo },
+  "public/data/proximo.json": proxNuevo,
+  "public/data/hallazgos.json": hallNuevo,
 };
 const tablaSinHora = { ultima_fecha: ultimaFecha, tabla, tabla_fuente: fuente };
 const hayCambioTabla = serializar({ ultima_fecha: dt.ultima_fecha, tabla: dt.tabla, tabla_fuente: dt.tabla_fuente }) !== serializar(tablaSinHora);
@@ -138,7 +183,7 @@ else if (SECO) console.log(`(modo seco) Cambiarían: ${cambiados.join(", ")}`);
 else {
   for (const [r, o] of Object.entries(salidas)) if (cambiados.includes(r)) writeFileSync(ruta(r), serializar(o));
   if (hayCambioTabla) writeFileSync(ruta("public/data/tabla.json"), serializar({ actualizado: ahoraArgentina(), ...tablaSinHora }));
-  else if (cambiados.some(r => r !== "datos-fuente/detalle.json")) writeFileSync(ruta("public/data/tabla.json"), serializar({ ...dt, actualizado: ahoraArgentina() }));
+  else if (cambiados.some(r => !r.startsWith("datos-fuente/"))) writeFileSync(ruta("public/data/tabla.json"), serializar({ ...dt, actualizado: ahoraArgentina() }));
   writeFileSync(ruta("datos-fuente/estado.json"), JSON.stringify({ ultima_fecha: ultimaFecha, partidos_nuevos: nuevos.map(p => p.fecha), actualizado: ahoraArgentina(), pendiente_editorial: nuevos.length > 0 }, null, 2));
   console.log(`Archivos actualizados: ${cambiados.join(", ")}`);
 }
