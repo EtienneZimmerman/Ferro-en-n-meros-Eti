@@ -4,8 +4,6 @@ import { tabla } from "../lib/charts.js";
 import { CAT } from "../lib/consts.js";
 import { $, el } from "../lib/dom.js";
 
-import html from "./templates/hallazgos.html?raw";
-
 let filtro = "todos", q = "", todos = false;
 function hallazgos() {
   const chips = $("#chips"); chips.textContent = "";
@@ -32,4 +30,4 @@ function init() {
   $("#q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); hallazgos(); });
   hallazgos();
 }
-export default { id: "hallazgos", titulo: "Hallazgos", html, init };
+export default { init };

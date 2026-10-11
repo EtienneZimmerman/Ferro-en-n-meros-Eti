@@ -4,8 +4,6 @@ import { tabla } from "../lib/charts.js";
 import { $, el } from "../lib/dom.js";
 import { PS } from "../lib/prode-state.js";
 
-import html from "./templates/prode.html?raw";
-
 export function initProde() {
   PS.api = {};
   const NOM = ["Gaby Zimmerman", "Nico Casillo", "Ignacio Carrión", "Balta Alcaide", "Román Da Silva", "Guille Criscuolli", "Vitto Bianchi", "Ale Zarate"];
@@ -124,4 +122,4 @@ export function initProde() {
   cargar();
 }
 
-export default { id: "prode", titulo: "Prode", html, init: initProde };
+export default { init: initProde };

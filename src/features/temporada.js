@@ -3,8 +3,6 @@ import { tip, showTip, hideTip, tabla } from "../lib/charts.js";
 import { RESC, FERRO } from "../lib/consts.js";
 import { $, el, f2, miles, S } from "../lib/dom.js";
 
-import html from "./templates/temporada.html?raw";
-
 function evol() {
   const c = $("#c-evol"); c.textContent = "";
   const ev = (DATA.historico && DATA.historico.evolucion && DATA.historico.evolucion.length) ? DATA.historico.evolucion : DATA.partidos.map(p => ({ fecha: p.n, "2026": p.pts_acum }));
@@ -92,9 +90,8 @@ function filtroPartidos() {
   return (v) => { q.value = v || ""; aplicar(); };
 }
 
-let filtrar;
+let filtrar, filtroAplicado;
 export default {
-  id: "temporada", titulo: "Temporada", html,
   init() {
     tabla("#t-rend", [{ k: "corte", h: "Situación", l: 1 }, { k: "pj", h: "PJ" }, { k: "g", h: "G" }, { k: "e", h: "E" }, { k: "p", h: "P" }, { k: "gf", h: "GF" }, { k: "gc", h: "GC" }, { k: "ppp", h: "Pts/p", f: f2 }], DATA.rendimiento);
     tabla("#t-tabla", [{ k: "pos", h: "#" }, { k: "equipo", h: "Equipo", l: 1 }, { k: "pts", h: "Pts" }, { k: "pj", h: "PJ" }, { k: "g", h: "G" }, { k: "e", h: "E" }, { k: "p", h: "P" }, { k: "gf", h: "GF" }, { k: "gc", h: "GC" }, { k: "dg", h: "DG" }],
@@ -109,5 +106,9 @@ export default {
     filtrar = filtroPartidos();
     historia(); initUltimas(); evol(); franjas();
   },
-  onShow(tab, param) { evol(); franjas(); if (tab === "tabla" && param != null && filtrar) filtrar(decodeURIComponent(param)); },
+  onShow(grupo, pagina, param) {
+    if (grupo !== "equipo") return;
+    evol(); franjas();
+    if (pagina === "resultados" && param !== filtroAplicado) { filtroAplicado = param; filtrar(param ? decodeURIComponent(param) : ""); }
+  },
 };

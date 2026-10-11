@@ -5,8 +5,6 @@ import { tip, showTip, hideTip, tabla } from "../lib/charts.js";
 import { RESC } from "../lib/consts.js";
 import { $, el, f2, miles, S } from "../lib/dom.js";
 
-import html from "./templates/jugadores.html?raw";
-
 let selF, A, B;
 function ficha(n) {
   selF.value = n; const j = DATA.jugadores.find(x => x.jugador === n);
@@ -59,7 +57,6 @@ function comparar() {
 }
 
 export default {
-  id: "jugadores", titulo: "Jugadores", html,
   init() {
     const maxMin = Math.max(...DATA.jugadores.map(j => j.minutos));
     tabla("#t-jug", [
@@ -75,8 +72,10 @@ export default {
     A.addEventListener("change", comparar); B.addEventListener("change", comparar);
     ficha(nombres.includes("Parisi") ? "Parisi" : nombres[0]); comparar();
   },
-  onShow(tab, param) {
+  // La ficha se dibuja con el ancho real, así que se redibuja al mostrarse.
+  onShow(grupo, pagina, param) {
+    if (grupo !== "jugadores" || pagina !== "ficha") return;
     const n = param && decodeURIComponent(param);
-    if (tab === "ficha" && n && nombres.includes(n)) ficha(n); else ficha(selF.value);
+    if (n && nombres.includes(n)) ficha(n); else ficha(selF.value);
   },
 };

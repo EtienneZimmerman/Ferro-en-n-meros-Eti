@@ -5,8 +5,6 @@ import { FERRO } from "../lib/consts.js";
 import { $, el, S } from "../lib/dom.js";
 import { PS } from "../lib/prode-state.js";
 
-import html from "./templates/laboratorio.html?raw";
-
 export function initLaboratorio() {
   const L = DATA.lab; if (!L) { return; }
   const NOMFW = ["Gaby Zimmerman", "Nico Casillo", "Ignacio Carrión", "Balta Alcaide", "Román Da Silva", "Guille Criscuolli", "Vitto Bianchi", "Ale Zarate"];
@@ -172,4 +170,4 @@ export function initLaboratorio() {
   })();
 }
 
-export default { id: "laboratorio", titulo: "Laboratorio", html, init: initLaboratorio };
+export default { init: initLaboratorio };

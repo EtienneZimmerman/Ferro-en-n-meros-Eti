@@ -9,11 +9,11 @@ const MAX_POR_GRUPO = 6;
 
 // Destinos fijos: herramientas y secciones, con sinónimos para que se encuentren como las nombra la gente.
 const DESTINOS = [
-  ["Tabla de posiciones", "#/temporada/tabla", "posiciones clasificacion grupo puntos reducido", "🏆"],
-  ["Resultados partido por partido", "#/temporada/tabla", "fixture partidos resultados fechas sintesis", "🗓️"],
-  ["Evolución de puntos y goles por franja", "#/temporada/evolucion", "grafico puntos acumulados franjas minutos rendimiento", "📈"],
-  ["Ferro 2026 contra 2025", "#/temporada/vs-2025", "comparacion temporada anterior historial rivales repetidos", "🔁"],
-  ["La última vez que…", "#/temporada/ultima-vez", "goleada remontada racha ultima vez", "⏳"],
+  ["Tabla de posiciones", "#/equipo/tabla", "posiciones clasificacion grupo puntos reducido", "🏆"],
+  ["Resultados partido por partido", "#/equipo/resultados", "fixture partidos resultados fechas sintesis", "🗓️"],
+  ["Goles por franja y mapa de minutos, 2026 contra 2025", "#/equipo/goles", "goles a favor en contra recibidos hechos franja cuarto de hora minutos calor grafico comparacion", "⚽"],
+  ["Puntos acumulados, índice de forma y rendimiento", "#/equipo/puntos", "grafico puntos evolucion forma ultimos 5 rendimiento local visitante situacion", "📈"],
+  ["Ferro 2026 contra 2025", "#/equipo/vs-2025", "comparacion temporada anterior jugadores que estaban", "🔁"],
   ["Previa del próximo partido", "#/partido/previa", "proximo rival fecha cuando donde", "⚽"],
   ["Pronóstico FW", "#/partido/pronostico", "prediccion maquina chances escenarios", "🔮"],
   ["La pizarra de Sara", "#/partido/pizarra", "once probable formacion sistema instrucciones dt", "📋"],
@@ -22,13 +22,18 @@ const DESTINOS = [
   ["El árbitro", "#/partido/arbitro", "referi designacion", "🟨"],
   ["Plantel completo", "#/jugadores/plantel", "jugadores minutos goles tarjetas", "👟"],
   ["Comparador de jugadores", "#/jugadores/comparador", "comparar versus", "⚖️"],
-  ["Calculadora del primer puesto", "#/laboratorio/calculadora", "ascenso primero punta simulador", "🧮"],
-  ["¿Y si al minuto…? (en vivo)", "#/laboratorio/en-vivo", "entretiempo ganando empatando perdiendo indice de forma", "⏱️"],
-  ["Mapa de minutos", "#/laboratorio/minutos", "cuarto de hora goles franja calor", "🔥"],
-  ["Duplas, tridentes e impacto del banco", "#/laboratorio/duplas-banco", "suplentes cambios titulares", "🤝"],
-  ["Rivales favoritos, bestias negras y cábalas", "#/laboratorio/rivales", "cabala bestia negra cronicas termometro", "😈"],
-  ["Trivia de la semana", "#/laboratorio/trivia", "preguntas juego quiz", "❓"],
-  ["Prode", "#/prode", "pronosticos apuestas tabla maquina", "🎯"],
+  ["Duplas, tridentes e impacto del banco", "#/jugadores/duplas-banco", "suplentes cambios titulares", "🤝"],
+  ["Historial contra rivales repetidos", "#/rivales/historial", "h2h rivales 2025 2026", "🆚"],
+  ["Rivales favoritos y bestias negras", "#/rivales/favoritos", "bestia negra favorito rival", "😈"],
+  ["Calculadora del primer puesto", "#/herramientas/calculadora", "ascenso primero punta simulador", "🧮"],
+  ["¿Y si al minuto…? (durante el partido)", "#/herramientas/en-vivo", "entretiempo ganando empatando perdiendo en vivo", "⏱️"],
+  ["Cábalas y tal fecha como esta", "#/herramientas/cabalas", "cabala curiosidades fecha anterior", "🍀"],
+  ["Prode", "#/comunidad/prode", "pronosticos apuestas tabla maquina", "🎯"],
+  ["Trivia de la semana", "#/comunidad/trivia", "preguntas juego quiz", "❓"],
+  ["Hallazgos y récords", "#/datos/hallazgos", "records rachas datos de color novedades", "💡"],
+  ["La última vez que…", "#/datos/ultima-vez", "goleada remontada racha ultima vez", "⏳"],
+  ["Termómetro de crónicas", "#/datos/cronicas", "cronicas tono elogiosa critica", "🌡️"],
+  ["Fuentes y método", "#/datos/fuentes", "de donde salen los datos como se calcula metodologia", "📚"],
 ];
 
 let indice = null;
@@ -48,7 +53,7 @@ function armarIndice() {
     items.push({
       grupo: "Rivales", ico: "🆚", t: r.equipo,
       sub: `${r.pos}° en la tabla · ${r.pts} pts` + (h ? ` · historial ${h.g}G ${h.e}E ${h.p}P` : ""),
-      href: "#/temporada/tabla/" + encodeURIComponent(r.equipo.replace(/^Deportivo /, "")), k: norm(r.equipo),
+      href: "#/equipo/resultados/" + encodeURIComponent(r.equipo.replace(/^Deportivo /, "")), k: norm(r.equipo),
     });
   });
   const ya = new Set([...rivales.keys()]);
@@ -56,7 +61,7 @@ function armarIndice() {
     const n = norm(p.rival);
     if ([...ya].some(x => x.includes(n) || n.includes(x))) return;
     ya.add(n);
-    items.push({ grupo: "Rivales", ico: "🆚", t: p.rival, sub: "Rival de esta temporada", href: "#/temporada/tabla/" + encodeURIComponent(p.rival), k: n });
+    items.push({ grupo: "Rivales", ico: "🆚", t: p.rival, sub: "Rival de esta temporada", href: "#/equipo/resultados/" + encodeURIComponent(p.rival), k: n });
   });
   if (DATA.arbitros && DATA.arbitros.tabla) DATA.arbitros.tabla.forEach(a => items.push({
     grupo: "Árbitros", ico: "🟨", t: a.arbitro,

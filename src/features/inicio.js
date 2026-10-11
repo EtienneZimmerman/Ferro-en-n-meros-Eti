@@ -7,8 +7,6 @@ import { $, el, S } from "../lib/dom.js";
 import { fechaLarga } from "../lib/fmt.js";
 import { cargarHtml2canvas } from "../lib/html2canvas.js";
 
-import html from "./templates/inicio.html?raw";
-
 function marcador() {
 $("#meta").textContent = `Primera Nacional 2026 · Grupo 1 · al cierre de la fecha ${DATA.ultima_fecha}. Actualizado ${DATA.actualizado}`;
 const dest = (DATA.novedades && DATA.novedades.find(n => !/diferencia a verificar/i.test(n.titulo))) || DATA.hallazgos.find(h => h.tipo !== "tabla") || DATA.hallazgos[0];
@@ -150,6 +148,5 @@ function ultimosHallazgos() {
 }
 
 export default {
-  id: "inicio", titulo: "Inicio", html,
   init() { marcador(); initNovedadesHoy(); initPlaca(); initCartel(); proximoCard(); ultimosHallazgos(); },
 };

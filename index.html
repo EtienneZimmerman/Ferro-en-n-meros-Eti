@@ -18,11 +18,11 @@
 
   <header class="app-bar">
     <div class="app-bar-in">
+      <button type="button" class="icono" id="btn-menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="side"><span aria-hidden="true">☰</span></button>
       <a class="marca" href="#/" aria-label="Ferro en números, ir al inicio">
         <img class="escudo" src="/img/escudo.png" alt="">
         <span class="marca-t"><b>Ferro en números</b><small>FerroWeb · Hablemos de Ferro</small></span>
       </a>
-      <nav class="nav" id="nav" aria-label="Secciones del sitio"></nav>
       <div class="acciones">
         <button type="button" class="icono" id="btn-buscar" aria-label="Buscar en todo el sitio"><span aria-hidden="true">🔍</span><span class="txt">Buscar</span><kbd aria-hidden="true">/</kbd></button>
         <button type="button" class="icono" id="btn-tema" aria-label="Cambiar entre tema claro y oscuro"><span aria-hidden="true">◐</span></button>
@@ -31,7 +31,11 @@
     </div>
   </header>
 
-  <main id="app" class="wrap"><p class="cargando" role="status">Cargando los números…</p></main>
+  <div class="layout">
+    <aside class="side" id="side" aria-label="Menú del sitio"><nav id="nav" aria-label="Secciones del sitio"></nav></aside>
+    <div class="side-fondo" id="side-fondo"></div>
+    <main id="app" class="wrap"><p class="cargando" role="status">Cargando los números…</p></main>
+  </div>
 
   <footer class="pie">
     <div class="pie-in">

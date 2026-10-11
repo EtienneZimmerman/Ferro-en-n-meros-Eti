@@ -1,7 +1,7 @@
 import "./styles/index.css";
 import { initCtx, DATA } from "./ctx.js";
 import { montar, iniciarRouter } from "./router.js";
-import { VISTAS } from "./views/index.js";
+import { FEATURES } from "./pages/index.js";
 import { initDesarrollo } from "./components/desarrollo.js";
 import { initBuscador } from "./search.js";
 import { initTema } from "./lib/theme.js";
@@ -28,8 +28,8 @@ async function arrancar() {
   initTema();
   montar(app);
   initDesarrollo();
-  for (const v of VISTAS) {
-    try { if (v.init) v.init(); } catch (e) { console.error(`Error iniciando la vista «${v.id}»`, e); }
+  for (const v of FEATURES) {
+    try { if (v.init) v.init(); } catch (e) { console.error(`Error iniciando un módulo`, e); }
   }
   document.querySelector("#pie").textContent = `Datos al cierre de la fecha ${DATA.ultima_fecha} de la Primera Nacional 2026. Se actualiza automáticamente todos los días a las 9 y la noche de cada partido. Última actualización: ${DATA.actualizado}.`;
   initBuscador();
