@@ -50,3 +50,18 @@ select { padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; b
 .rv-etiqueta { margin: 16px 0 0; padding: 10px 14px; border-radius: var(--r); font-size: 14px; border: 1px solid var(--line); }
 .rv-etiqueta.fav { border-color: var(--ok); } .rv-etiqueta.bes { border-color: var(--bad); }
 .rv-prox { margin: 6px 0; }
+
+/* asistente de redacción */
+.as-pasos { margin: 8px 0 14px; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 14.5px; }
+.as-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; margin-bottom: 14px; }
+.as-campo { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
+.as-campo > span { font-weight: 700; }
+.as-campo select, .as-campo textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); font: inherit; }
+#as-salida { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; min-height: 260px; resize: vertical; }
+.as-acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+.as-principal { border: 0; background: var(--verde); color: #fff; padding: 11px 20px; border-radius: 999px; font-weight: 800; font-size: 15px; cursor: pointer; }
+.as-principal:hover { filter: brightness(1.1); }
+.as-sec { display: inline-block; border: 1px solid var(--verde); color: var(--verde-txt); padding: 9px 16px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 14px; }
+.as-sec:hover { background: var(--verde); color: #fff; }
+.as-tipos td, .as-tipos th { white-space: normal; vertical-align: top; }
+.as-tipos code { background: var(--chip); padding: 1px 6px; border-radius: 4px; }

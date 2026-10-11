@@ -20,6 +20,7 @@ import { mismoEquipo, equipoCanonico, ahoraArgentina } from "./lib/texto.mjs";
 import { bajarTemporada } from "./lib/temporadas.mjs";
 import * as C from "./lib/calculos.mjs";
 import { resolverFwHistorial } from "./lib/editorial.mjs";
+import { bajarPlanilla, aplicarArbitroYHorario, pedidosPendientes } from "./lib/redaccion.mjs";
 
 const args = new Set(process.argv.slice(2));
 const SECO = args.has("--seco"), RECONSTRUIR = args.has("--reconstruir"), RELEER_TEMPORADAS = args.has("--temporadas");
@@ -142,9 +143,16 @@ const P26 = C.unificar2026(P, participaciones, DETALLE), P25 = C.unificarAnterio
 const arbitrosConocidos = [...new Set(P26.map(p => p.arbitro))];
 for (const p of [...P25, ...P24]) { p.arbitro = C.canonicoArbitro(p.arbitro, arbitrosConocidos); if (!arbitrosConocidos.includes(p.arbitro)) arbitrosConocidos.push(p.arbitro); }
 
+// Lo que carga la redacción en la planilla de Google: árbitro y horario de cada fecha se aplican solos; los pedidos para la IA se dejan listos.
+const cfgRed = leer("public/data/redaccion-config.json", {});
+let filasPlanilla = [];
+if (cfgRed.csv) { try { filasPlanilla = await bajarPlanilla(cfgRed.csv); } catch (e) { aviso(`No se pudo leer la planilla de la redacción: ${e.message}`); } }
+const aplicado = aplicarArbitroYHorario(dprox.calendario, filasPlanilla, { ultimaFecha, arbitrosConocidos, designadoActual: dprox.arbitros?.designado_nombre });
+aplicado.avisos.forEach(aviso);
+const dproxB = { ...dprox, calendario: aplicado.calendario, arbitros: { ...dprox.arbitros, designado_nombre: aplicado.designado_nombre } };
 const labViejo = leer("public/data/lab.json").lab, hallViejo = leer("public/data/hallazgos.json");
-const proxPendiente = (dprox.calendario?.proximos ?? []).find(x => x.fecha > ultimaFecha);
-const arb = C.arbitros([...P25, ...P26], dprox.arbitros?.designado_nombre);
+const proxPendiente = (dproxB.calendario?.proximos ?? []).find(x => x.fecha > ultimaFecha);
+const arb = C.arbitros([...P25, ...P26], dproxB.arbitros?.designado_nombre);
 const minutos = C.labMinutos(P26, P25), duplas = C.labDuplas(P26), rivalesLab = C.labRivales([...P24, ...P25, ...P26], [2024, 2025, 2026]);
 const labNuevo = {
   ...labViejo,
@@ -154,11 +162,11 @@ const labNuevo = {
 };
 const tablaAlDia = fuente.actualizada === `tras la fecha ${ultimaFecha}`;
 const proxNuevo = {
-  ...dprox,
-  arbitros: { ...dprox.arbitros, ...arb },
-  fw_historial: resolverFwHistorial(dprox.fw_historial, P, participaciones),   // anota solo si el pronóstico FW acertó
+  ...dproxB,
+  arbitros: { ...dproxB.arbitros, ...arb },
+  fw_historial: resolverFwHistorial(dproxB.fw_historial, P, participaciones),   // anota solo si el pronóstico FW acertó
   // Los escenarios parten de los puntos de la tabla: si FútbolTotal todavía no la actualizó, se deja lo anterior (el sitio lo detecta por tras_fecha).
-  escenarios: tablaAlDia ? { ...C.escenarios(tabla, dprox.calendario, ultimaFecha, FERRO), tras_fecha: ultimaFecha } : dprox.escenarios,
+  escenarios: tablaAlDia ? { ...C.escenarios(tabla, dproxB.calendario, ultimaFecha, FERRO), tras_fecha: ultimaFecha } : dproxB.escenarios,
 };
 const hallNuevo = { ...hallViejo, ultimas: C.ultimas([...P25, ...P26]) };
 const historicoNuevo = { ...de.historico, ...C.historico(P26, P25, de.historico) };
@@ -171,6 +179,7 @@ const salidas = {
   "public/data/equipo.json": equipoNuevo,
   "datos-fuente/detalle.json": DETALLE,
   "datos-fuente/temporadas.json": T,
+  ...(cfgRed.csv ? { "datos-fuente/pedidos-ia.json": pedidosPendientes(filasPlanilla, leer("datos-fuente/pedidos-atendidos.json", [])) } : {}),
   "public/data/lab.json": { lab: labNuevo },
   "public/data/proximo.json": proxNuevo,
   "public/data/hallazgos.json": hallNuevo,

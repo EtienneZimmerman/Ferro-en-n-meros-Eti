@@ -49,6 +49,12 @@ Rivales (ficha de cada rival, historial, favoritos y bestias negras) · Herramie
 **Compartir:** cada tarjeta tiene un botón ⤴ para copiar un texto listo para tuitear, copiar el link o bajar una imagen con la
 marca del sitio (`src/components/compartir.js`). El detalle de cada hallazgo también tiene esas acciones.
 
+## Para la redacción (sin conocimientos técnicos)
+
+- **`LEEME-REDACCION.md`**: guía en lenguaje simple para cargar novedades, árbitro y horarios en una planilla de Google, y para escribir con ayuda de la IA.
+- **Herramientas → Asistente de redacción** (en el sitio): arma el pedido para la IA con los datos reales ya incluidos; se copia y se pega en Claude.
+- **`datos-fuente/EDITORIAL.md`**: instrucciones de la tarea con Claude que prepara la previa y los hallazgos de cada fecha.
+
 ## Actualización automática de datos
 
 Una tarea de GitHub Actions (`.github/workflows/actualizar-datos.yml`) corre **cada 2 horas**: mira si FerroWeb publicó la
@@ -87,6 +93,7 @@ datos buenos. Si el error es de FerroWeb, se corrige en `datos-fuente/correccion
 **Comandos**
 ```
 npm test                      # pruebas del parser con síntesis reales
+node scripts/validar-editorial.mjs      # qué falta para la previa de la próxima fecha
 npm run datos:actualizar      # lo mismo que hace la tarea (agregar -- --seco para no escribir nada)
 npm run datos:verificar       # reconstruye los partidos desde FerroWeb y los compara con lo cargado
 node scripts/verificar-editorial.mjs      # lo mismo para laboratorio, árbitros, histórico y escenarios

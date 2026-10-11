@@ -33,6 +33,8 @@ const DESTINOS = [
   ["Cábalas y tal fecha como esta", "#/herramientas/cabalas", "cabala curiosidades fecha anterior", "🍀"],
   ["Prode", "#/comunidad/prode", "pronosticos apuestas tabla maquina", "🎯"],
   ["Trivia de la semana", "#/comunidad/trivia", "preguntas juego quiz", "❓"],
+  ["Asistente de redacción: armar el pedido para la IA", "#/herramientas/asistente", "ia claude prompt pedido tuit escribir redactar guion programa cargar novedades planilla arbitro horario", "✍️"],
+  ["De la redacción: novedades cargadas por el equipo", "#/datos/redaccion", "novedades redaccion ferroweb", "📰"],
   ["Hallazgos y récords", "#/datos/hallazgos", "records rachas datos de color novedades", "💡"],
   ["La última vez que…", "#/datos/ultima-vez", "goleada remontada racha ultima vez", "⏳"],
   ["Termómetro de crónicas", "#/datos/cronicas", "cronicas tono elogiosa critica", "🌡️"],

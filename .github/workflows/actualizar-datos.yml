@@ -26,7 +26,7 @@ jobs:
           node-version: 22
 
       - name: Pruebas del parser
-        run: node --test scripts/test/parser.test.mjs scripts/test/calculos.test.mjs scripts/test/editorial.test.mjs
+        run: node --test scripts/test/parser.test.mjs scripts/test/calculos.test.mjs scripts/test/editorial.test.mjs scripts/test/redaccion.test.mjs
 
       - name: Actualizar datos
         id: datos
