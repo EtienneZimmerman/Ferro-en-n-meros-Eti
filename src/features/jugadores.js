@@ -6,15 +6,42 @@ import { RESC } from "../lib/consts.js";
 import { $, el, f2, miles, S } from "../lib/dom.js";
 
 let selF, A, B;
+
+const ETAPAS_VISIBLES = 5;   // las más recientes; el resto se despliega con un botón
+
+// Trayectoria: lista cronológica «años · club», con la etapa en Ferro resaltada.
+function trayectoria(j, despuesDe) {
+  const viejo = $("#ficha-tray"); if (viejo) viejo.remove();
+  const etapas = j.trayectoria || []; if (!etapas.length) return;
+  const anios = (d, h) => d && h ? (d === h ? `${d}` : `${d}–${h}`) : d ? `${d}–hoy` : h ? `hasta ${h}` : "";
+  const nota = (x) => x === "juveniles" ? "Inferiores" : x === "préstamo" ? "Préstamo" : "";
+  const sec = el("section", "tray"); sec.id = "ficha-tray";
+  const cab = el("div", "tray-cab"); cab.append(el("h4", null, "Trayectoria"), el("span", null, `${etapas.length} ${etapas.length === 1 ? "etapa" : "etapas"}`));
+  const lista = el("ol", "tray-lista");
+  const filas = etapas.map(([club, d, h, x]) => {
+    const fe = /ferro carril oeste/i.test(club);
+    const li = el("li", fe ? "fe" : ""); li.append(el("time", null, anios(d, h)), el("b", null, fe ? "Ferro Carril Oeste" : club));
+    if (nota(x)) li.append(el("small", null, nota(x)));
+    return li;
+  });
+  filas.forEach(li => lista.append(li));
+  const ocultas = filas.slice(0, Math.max(0, filas.length - ETAPAS_VISIBLES));
+  ocultas.forEach(li => li.hidden = true);
+  sec.append(cab, lista);
+  if (ocultas.length) {
+    const b = el("button", "tray-mas", `Ver las ${ocultas.length} etapas anteriores`); b.type = "button";
+    b.addEventListener("click", () => { const abre = ocultas[0].hidden; ocultas.forEach(li => li.hidden = !abre); b.textContent = abre ? "Ver menos" : `Ver las ${ocultas.length} etapas anteriores`; });
+    sec.append(b);
+  }
+  despuesDe.after(sec);
+}
 function ficha(n) {
   selF.value = n; const j = DATA.jugadores.find(x => x.jugador === n);
   { const fc = $("#ficha-cara"); fc.replaceWith(caraJug(n, "g", false, "ficha-cara")); }
   const k = $("#ficha-kpis"); k.textContent = "";
   [["Partidos", `${j.pj}`], ["Titular / suplente", `${j.titular}/${j.suplente}`], ["Minutos", miles(j.minutos)], ["Goles", j.goles], ["Amarillas / rojas", `${j.amarillas}/${j.rojas}`], ["Pts/p con él", f2(j.pts_partido_titular)], ["Pts/p sin él", f2(j.pts_partido_sin_el)]]
     .forEach(([l, v]) => { const d = el("div", "kpi"); d.append(el("div", "l", l), el("div", "v", String(v))); k.append(d); });
-  { const old = $("#ficha-tray"); if (old) old.remove(); if (j.trayectoria && j.trayectoria.length) { const t = el("div", "tray"); t.id = "ficha-tray"; t.append(el("b", null, "Trayectoria:"));
-    j.trayectoria.forEach((c, i) => { if (i) t.append(el("i", null, "→")); const fe = /ferro carril oeste/i.test(c[0]); const y = c[1] && c[2] && c[1] !== c[2] ? `${c[1]}-${String(c[2]).slice(2)}` : (c[1] && !c[2] ? `${c[1]}-hoy` : (c[1] || c[2] || "")); t.append(el("span", fe ? "fe" : null, `${fe ? "Ferro" : c[0]}${y ? " " + y : ""}${c[3] === "juveniles" ? " (inf.)" : c[3] === "préstamo" ? " (prést.)" : ""}`)); });
-    k.after(t); } }
+  trayectoria(j, k);
   const c = $("#c-ficha"); c.textContent = "";
   const mine = new Map(DATA.participaciones.filter(p => p.jugador === n).map(p => [p.fecha, p]));
   const fechas = DATA.partidos.slice().sort((a, b) => a.n - b.n).map(p => p.fecha), W = c.clientWidth || 600, H = 170, m = { t: 26, r: 4, b: 22, l: 30 };

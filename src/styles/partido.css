@@ -80,9 +80,6 @@
 .cc-par small { display: block; opacity: .75; }
 .cc-cl { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; }
 .cc-cl span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: .85rem; cursor: help; }
-.tray { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 10px 0 4px; font-size: .88rem; }
-.tray span { background: var(--fondo2, rgba(0,0,0,.05)); border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; }
-.tray span.fe { background: var(--verde); color: #fff; border-color: var(--verde); } .tray i { opacity: .5; font-style: normal; }
 .aten-m { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 10px 24px; margin-bottom: 8px; }
 .am { display: grid; grid-template-columns: 1fr; gap: 3px; font-size: 12.5px; }
 .am .t { font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; gap: 8px; }

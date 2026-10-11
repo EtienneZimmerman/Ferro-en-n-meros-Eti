@@ -104,14 +104,29 @@ function mostrar() {
   FEATURES.forEach(f => { if (f.onShow) f.onShow(g.id, pagina, param); });
 }
 
-// ---------- menú lateral en el celular ----------
-function cerrarMenu() { document.body.classList.remove("menu-abierto"); const b = $("#btn-menu"); if (b) b.setAttribute("aria-expanded", "false"); }
+// ---------- menú lateral: cajón en el celular, mostrar/ocultar en escritorio (se recuerda) ----------
+const esMovil = () => matchMedia("(max-width: 900px)").matches;
+const guardado = { leer: () => { try { return localStorage.getItem("fen_menu"); } catch (e) { return null; } }, poner: (v) => { try { localStorage.setItem("fen_menu", v); } catch (e) { /* sin almacenamiento */ } } };
+
+function actualizarBoton() {
+  const b = $("#btn-menu"); if (!b) return;
+  const visible = esMovil() ? document.body.classList.contains("menu-abierto") : !document.body.classList.contains("menu-oculto");
+  b.setAttribute("aria-expanded", String(visible));
+}
+function cerrarMenu() { document.body.classList.remove("menu-abierto"); actualizarBoton(); }
 
 function iniciarMenu() {
+  if (guardado.leer() === "oculto") document.body.classList.add("menu-oculto");
   const b = $("#btn-menu");
-  b.addEventListener("click", () => { const abre = !document.body.classList.contains("menu-abierto"); document.body.classList.toggle("menu-abierto", abre); b.setAttribute("aria-expanded", String(abre)); });
+  b.addEventListener("click", () => {
+    if (esMovil()) document.body.classList.toggle("menu-abierto");
+    else { const oculto = document.body.classList.toggle("menu-oculto"); guardado.poner(oculto ? "oculto" : "visible"); }
+    actualizarBoton();
+  });
   $("#side-fondo").addEventListener("click", cerrarMenu);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("menu-abierto")) { cerrarMenu(); b.focus(); } });
+  matchMedia("(max-width: 900px)").addEventListener("change", () => { cerrarMenu(); });
+  actualizarBoton();
 }
 
 export function iniciarRouter() {
