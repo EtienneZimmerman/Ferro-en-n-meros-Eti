@@ -1,4 +1,4 @@
-import { DATA, prox } from "../../ctx.js";
+import { DATA, prox, previaAlDia } from "../../ctx.js";
 import { tabla } from "../../lib/charts.js";
 import { $, el, f2 } from "../../lib/dom.js";
 
@@ -6,7 +6,7 @@ export function initArbitro() {
   const A = DATA.arbitros, sec = $('[data-tab="arbitro"]'); if (!A) { sec.hidden = true; return; }
   const d = A.designado, nom = A.designado_nombre, hu = prox && prox.arbitro_humor;
   const caja = $("#arb-caja");
-  if (!nom) { caja.hidden = true; }
+  if (!nom || !previaAlDia) { caja.hidden = true; }
   else {
     $("#arb-eti").textContent = `El árbitro del domingo · F${prox.fecha} vs ${prox.rival}`;
     $("#arb-t").textContent = hu && hu.titulo ? hu.titulo : nom;

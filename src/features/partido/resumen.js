@@ -1,4 +1,4 @@
-import { DATA, prox } from "../../ctx.js";
+import { DATA, prox, previaAlDia } from "../../ctx.js";
 import { FERRO } from "../../lib/consts.js";
 import { $, el } from "../../lib/dom.js";
 import { fechaLarga } from "../../lib/fmt.js";
@@ -37,7 +37,7 @@ export function initResumen() {
   const vs = $("#pv-vs"); vs.textContent = "";
   const loc = prox.cond === "L" ? "Ferro" : prox.rival, vis = prox.cond === "L" ? prox.rival : "Ferro";
   vs.append(document.createTextNode(loc), el("small", null, "vs"), document.createTextNode(vis));
-  if (P) {
+  if (P && previaAlDia) {
     const W = DATA.fw || P;
     if (DATA.fw) {
       const fwb = $("#pv-fw"); fwb.textContent = "";
@@ -85,7 +85,12 @@ export function initResumen() {
     });
     const ch = $("#pv-chances"); ch.textContent = "";
     P.chances_primero.forEach(x => { const r = el("div", "pv-ch" + (x.equipo === FERRO ? " yo" : "")); const b = el("div", "b"); const i = el("i"); i.style.width = Math.max(x.p, 1) + "%"; b.append(i); r.append(el("span", null, x.equipo === FERRO ? "Ferro" : x.equipo.replace("Deportivo ", "")), b, el("span", "n", x.p + "%")); ch.append(r); });
-  } else { $(".pv-pron").hidden = true; }
+  } else {
+    // La previa de esta fecha todavía no está lista: se ocultan los bloques que dependen del pronóstico.
+    $(".pv-pron").hidden = true;
+    ["#pv-fwcaja", "#pv-esc-caja", "#pv-metodo"].forEach(id => { $(id).hidden = true; });
+    $("#aviso-previa").hidden = false;
+  }
   // chicanas rotativas
   const hu = prox.humor || {}; const frases = (hu.frases && hu.frases.length) ? hu.frases : (hu.puntos || []).map(x => x[1].split(". ")[0] + ".");
   const fr = $("#pv-frase");

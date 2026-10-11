@@ -1,5 +1,5 @@
 import { caraJug } from "../components/caras.js";
-import { DATA, ult, ferroT, FOTOS_FW, PRODE_CFG } from "../ctx.js";
+import { DATA, ult, ferroT, FOTOS_FW, PRODE_CFG, previaAlDia } from "../ctx.js";
 import { tabla } from "../lib/charts.js";
 import { FERRO } from "../lib/consts.js";
 import { $, el, S } from "../lib/dom.js";
@@ -15,7 +15,7 @@ export function initLaboratorio() {
 
   // --- calculadora del primer puesto ---
   (function calc() {
-    const E = DATA.escenarios; if (!E || !E.quedan || !E.quedan.length) { $("#lab-calc").hidden = true; return; }
+    const E = DATA.escenarios; if (!previaAlDia || !E || !E.quedan || !E.quedan.length) { $("#lab-calc").hidden = true; return; }
     const restan = E.quedan.length, PTS = { G: 3, E: 1, P: 0 };
     const eqs = [{ equipo: FERRO, nombre: "Ferro", pts: E.ferro, fe: true, rows: E.quedan.map(q => `F${q.fecha} ${q.cond === "L" ? "vs" : "en cancha de"} ${q.rival}`), sel: E.quedan.map(() => "G") }]
       .concat((E.perseguidores || []).map(p => ({ equipo: p.equipo, nombre: p.equipo.replace("Deportivo ", ""), pts: p.pts, rows: Array.from({ length: restan }, (_, i) => `Partido ${i + 1}`), sel: Array.from({ length: restan }, () => "G") })));

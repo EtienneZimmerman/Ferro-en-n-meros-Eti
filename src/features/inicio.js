@@ -1,6 +1,6 @@
 import { abrirDesarrollo, tieneDesarrollo } from "../components/desarrollo.js";
 import { tarjeta } from "../components/tarjeta.js";
-import { DATA, prox, ult, ferroT, segundo, TODOS, FOTOS_FW } from "../ctx.js";
+import { DATA, prox, ult, ferroT, segundo, TODOS, FOTOS_FW, previaAlDia } from "../ctx.js";
 import { tabla } from "../lib/charts.js";
 import { FERRO } from "../lib/consts.js";
 import { $, el, S } from "../lib/dom.js";
@@ -137,7 +137,7 @@ function proximoCard() {
   const cuando = prox.dia ? fechaLarga(prox.dia) + (prox.hora ? ` · ${prox.hora} hs` : "") : "A confirmar";
   a.append(el("div", "cuando", cuando + (prox.estadio ? ` · ${prox.estadio}` : "")));
   const W = DATA.fw;
-  if (W) { const [gl, gv] = W.cond === "L" ? [W.gf, W.gc] : [W.gc, W.gf]; a.append(el("div", "fw", `Pronóstico FW: ${gl}-${gv}`)); }
+  if (W && previaAlDia) { const [gl, gv] = W.cond === "L" ? [W.gf, W.gc] : [W.gc, W.gf]; a.append(el("div", "fw", `Pronóstico FW: ${gl}-${gv}`)); }
   a.append(el("span", "lee", "Ver la previa completa →"));
   box.append(a);
 }

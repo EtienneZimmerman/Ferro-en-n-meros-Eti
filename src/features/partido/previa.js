@@ -1,5 +1,5 @@
 import { tarjeta } from "../../components/tarjeta.js";
-import { DATA, prox, TODOS } from "../../ctx.js";
+import { DATA, prox, TODOS, previaAlDia } from "../../ctx.js";
 import { tabla } from "../../lib/charts.js";
 import { FERRO } from "../../lib/consts.js";
 import { $, el, S } from "../../lib/dom.js";
@@ -79,8 +79,8 @@ export function previa() {
     box.append(fo);
   }
   // escenarios
-  const E = DATA.escenarios; const c = $("#c-esc"); c.textContent = "";
-  if (!E) return;
+  const E = previaAlDia ? DATA.escenarios : null; const c = $("#c-esc"); c.textContent = "";
+  if (E) {
   $("#esc-nota").textContent = `Puntos actuales y máximo posible si ganan todo lo que les queda. Necesitamos ${E.necesita_para_asegurar} puntos para asegurar el 1° sin depender de nadie.`;
   const filas = [{ equipo: "Ferro", pts: E.ferro, maximo: E.ferro_max, yo: true }, ...E.perseguidores.map(p => ({ equipo: p.equipo.replace("Deportivo ", ""), pts: p.pts, maximo: p.maximo }))];
   const W = c.clientWidth || 340, rowH = 40, ml = 92, mr = 40, H = filas.length * rowH + 24;
@@ -97,8 +97,9 @@ export function previa() {
     S("rect", { x: x(lo), y: y + 3, width: x(f.pts) - x(lo), height: 14, rx: 7, fill: f.yo ? "var(--verde)" : "var(--lin25)" }, svg);
     const tv = S("text", { x: x(f.maximo) + 6, y: y + 14 }, svg); tv.textContent = `${f.pts} → ${f.maximo}`;
   });
+  }
   const ol = $("#claves"); ol.textContent = "";
-  if (DATA.claves && DATA.claves.length) { $("#claves-t").textContent = `Claves para ganarle a ${prox.rival}`; DATA.claves.forEach(k => { const li = el("li"); li.append(el("span", "kt", k.titulo), el("span", "kd", k.dato), el("span", "kp", k.porque)); ol.append(li); }); }
+  if (previaAlDia && DATA.claves && DATA.claves.length) { $("#claves-t").textContent = `Claves para ganarle a ${prox.rival}`; DATA.claves.forEach(k => { const li = el("li"); li.append(el("span", "kt", k.titulo), el("span", "kd", k.dato), el("span", "kp", k.porque)); ol.append(li); }); }
   else $("#claves-caja").hidden = true;
   const hu = prox.humor;
   if (hu) { $("#humor-t").textContent = `Manual para bajar a ${prox.rival} de un hondazo`; $("#humor-i").textContent = hu.intro; graficosChicana(hu); const l = $("#humor-l"); l.textContent = ""; hu.puntos.forEach(([a, b]) => { const li = el("li"); li.append(el("b", null, a), el("span", null, b)); l.append(li); }); $("#humor-c").textContent = hu.cierre || ""; }

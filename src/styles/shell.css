@@ -128,3 +128,5 @@
 .bs-pie { display: flex; gap: 16px; padding: 8px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
 .bs-pie kbd { margin-right: 4px; }
 @media (max-width: 600px) { .bs-pie { display: none; } .buscador { margin-top: 12px; } }
+
+.aviso-previa { margin: 0; padding: 10px 14px; border: 1px dashed var(--warn); border-radius: var(--r); background: var(--panel); color: var(--ink); font-size: 14px; }
