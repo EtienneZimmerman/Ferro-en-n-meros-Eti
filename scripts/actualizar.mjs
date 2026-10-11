@@ -19,6 +19,7 @@ import { bajarTabla, URL_TABLA } from "./lib/futboltotal.mjs";
 import { mismoEquipo, equipoCanonico, ahoraArgentina } from "./lib/texto.mjs";
 import { bajarTemporada } from "./lib/temporadas.mjs";
 import * as C from "./lib/calculos.mjs";
+import { resolverFwHistorial } from "./lib/editorial.mjs";
 
 const args = new Set(process.argv.slice(2));
 const SECO = args.has("--seco"), RECONSTRUIR = args.has("--reconstruir"), RELEER_TEMPORADAS = args.has("--temporadas");
@@ -155,6 +156,7 @@ const tablaAlDia = fuente.actualizada === `tras la fecha ${ultimaFecha}`;
 const proxNuevo = {
   ...dprox,
   arbitros: { ...dprox.arbitros, ...arb },
+  fw_historial: resolverFwHistorial(dprox.fw_historial, P, participaciones),   // anota solo si el pronóstico FW acertó
   // Los escenarios parten de los puntos de la tabla: si FútbolTotal todavía no la actualizó, se deja lo anterior (el sitio lo detecta por tras_fecha).
   escenarios: tablaAlDia ? { ...C.escenarios(tabla, dprox.calendario, ultimaFecha, FERRO), tras_fecha: ultimaFecha } : dprox.escenarios,
 };

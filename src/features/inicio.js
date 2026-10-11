@@ -1,3 +1,4 @@
+import { PS } from "../lib/prode-state.js";
 import { abrirDesarrollo, tieneDesarrollo } from "../components/desarrollo.js";
 import { tarjeta } from "../components/tarjeta.js";
 import { DATA, prox, ult, ferroT, segundo, TODOS, FOTOS_FW, previaAlDia } from "../ctx.js";
@@ -84,7 +85,7 @@ export function initPlaca() {
     const lg = document.querySelector(".fwlogo"); cab.append(izq); if (lg) { const im = el("img"); im.src = lg.src; cab.append(im); } P.append(cab);
     const c1 = el("div", "card"); c1.append(el("div", "t", "⚽ Goles de Ferro"), el("div", "d", u.goleadores && u.goleadores !== "—" ? u.goleadores.replace(/(\d+)(pt|st)/g, "$1'$2") : "No hubo goles nuestros.")); P.append(c1);
     const tb = DATA.tabla.slice().sort((a, b) => a.pos - b.pos).slice(0, 4), c2 = el("div", "card"); c2.append(el("div", "t", "📊 Así quedó la punta")); const ti = el("div", "tiles"); tb.forEach(r => { const x = el("div", "tile"); x.append(el("b", null, `${r.pos}° · ${r.pts}`), el("span", null, r.equipo.replace("Deportivo ", "").replace("Ferro Carril Oeste", "Ferro"))); ti.append(x); }); c2.append(ti); P.append(c2);
-    const R = window.__prode, pf = R && R.preds && R.preds[u.fecha]; const fw = (DATA.fw_historial || []).find(h => h.fecha === u.fecha);
+    const R = PS.data, pf = R && R.preds && R.preds[u.fecha]; const fw = (DATA.fw_historial || []).find(h => h.fecha === u.fecha);
     const c3 = el("div", "card"); c3.append(el("div", "t", "🏆 El Prode de la fecha"));
     const lineas = []; if (fw) lineas.push(`La Máquina dijo ${fw.gf}-${fw.gc}${fw.goleador ? " con gol de " + fw.goleador : ""}: ${fw.exacto_ok ? "¡exacto!" : fw.signo_ok ? "acertó el resultado" : "le erró"}.`);
     if (pf) { const ex = Object.entries(pf).filter(([n, p]) => p.gf === u.gf && p.gc === u.gc).map(([n]) => cortoN(n)); const ac = Object.entries(pf).filter(([n, p]) => Math.sign(p.gf - p.gc) === Math.sign(u.gf - u.gc) && !(p.gf === u.gf && p.gc === u.gc)).map(([n]) => cortoN(n)); lineas.push(ex.length ? `Exacto: ${ex.join(", ")} 🎯` : "Nadie le pegó al exacto."); if (ac.length) lineas.push(`Acertaron el resultado: ${ac.join(", ")}.`); }
