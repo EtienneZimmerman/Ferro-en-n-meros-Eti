@@ -1,0 +1,7 @@
+.cmp { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 6px 10px; align-items: center; font-size: 13.5px; margin-top: 10px; }
+.cmp .m { text-align: center; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.cmp .a, .cmp .b { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.cmp .a { justify-content: flex-end; }
+.cmp .bar { height: 10px; border-radius: 5px; background: var(--verde); }
+.cmp .b .bar { background: var(--warn); }
+.cmp .gana { color: var(--verde-txt); }
