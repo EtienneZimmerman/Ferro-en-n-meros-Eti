@@ -17,6 +17,7 @@ import jugadores from "../features/jugadores.js";
 import hallazgos from "../features/hallazgos.js";
 import laboratorio from "../features/laboratorio.js";
 import prode from "../features/prode.js";
+import rivales from "../features/rivales.js";
 
 export const GRUPOS = [
   { id: "inicio", nav: "Inicio", icono: "🏠", html: inicioHtml },
@@ -30,4 +31,4 @@ export const GRUPOS = [
 ];
 
 // Módulos que dibujan el contenido. init() corre una vez; onShow(grupo, pagina, param) cada vez que cambia la ruta.
-export const FEATURES = [inicio, partido, temporada, jugadores, hallazgos, laboratorio, prode];
+export const FEATURES = [inicio, partido, temporada, jugadores, rivales, hallazgos, laboratorio, prode];

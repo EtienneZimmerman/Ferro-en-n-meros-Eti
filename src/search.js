@@ -12,17 +12,20 @@ const DESTINOS = [
   ["Tabla de posiciones", "#/equipo/tabla", "posiciones clasificacion grupo puntos reducido", "🏆"],
   ["Resultados partido por partido", "#/equipo/resultados", "fixture partidos resultados fechas sintesis", "🗓️"],
   ["Goles por franja y mapa de minutos, 2026 contra 2025", "#/equipo/goles", "goles a favor en contra recibidos hechos franja cuarto de hora minutos calor grafico comparacion", "⚽"],
-  ["Puntos acumulados, índice de forma y rendimiento", "#/equipo/puntos", "grafico puntos evolucion forma ultimos 5 rendimiento local visitante situacion", "📈"],
+  ["Puntos acumulados partido a partido", "#/equipo/puntos", "grafico puntos evolucion acumulados", "📈"],
+  ["Índice de forma y rendimiento por situación", "#/equipo/forma", "forma ultimos 5 rendimiento local visitante situacion sistema primera rueda", "📊"],
   ["Ferro 2026 contra 2025", "#/equipo/vs-2025", "comparacion temporada anterior jugadores que estaban", "🔁"],
   ["Previa del próximo partido", "#/partido/previa", "proximo rival fecha cuando donde", "⚽"],
   ["Pronóstico FW", "#/partido/pronostico", "prediccion maquina chances escenarios", "🔮"],
   ["La pizarra de Sara", "#/partido/pizarra", "once probable formacion sistema instrucciones dt", "📋"],
   ["El rival: la previa en números y caras conocidas", "#/partido/rival", "ateneaid ex jugadores trayectorias", "🤝"],
   ["Chicanas", "#/partido/chicanas", "manual humor cargada", "😜"],
-  ["El árbitro", "#/partido/arbitro", "referi designacion", "🟨"],
+  ["El árbitro del próximo partido", "#/partido/arbitro", "referi designacion", "🟨"],
+  ["Árbitros de la temporada", "#/partido/arbitros", "referis todos tabla", "🟨"],
   ["Plantel completo", "#/jugadores/plantel", "jugadores minutos goles tarjetas", "👟"],
   ["Comparador de jugadores", "#/jugadores/comparador", "comparar versus", "⚖️"],
   ["Duplas, tridentes e impacto del banco", "#/jugadores/duplas-banco", "suplentes cambios titulares", "🤝"],
+  ["Ficha de cada rival", "#/rivales/ficha", "rival equipo historial ida como nos fue goles contra", "🆚"],
   ["Historial contra rivales repetidos", "#/rivales/historial", "h2h rivales 2025 2026", "🆚"],
   ["Rivales favoritos y bestias negras", "#/rivales/favoritos", "bestia negra favorito rival", "😈"],
   ["Calculadora del primer puesto", "#/herramientas/calculadora", "ascenso primero punta simulador", "🧮"],
@@ -53,7 +56,7 @@ function armarIndice() {
     items.push({
       grupo: "Rivales", ico: "🆚", t: r.equipo,
       sub: `${r.pos}° en la tabla · ${r.pts} pts` + (h ? ` · historial ${h.g}G ${h.e}E ${h.p}P` : ""),
-      href: "#/equipo/resultados/" + encodeURIComponent(r.equipo.replace(/^Deportivo /, "")), k: norm(r.equipo),
+      href: "#/rivales/ficha/" + encodeURIComponent(r.equipo.replace(/^Deportivo /, "")), k: norm(r.equipo),
     });
   });
   const ya = new Set([...rivales.keys()]);
@@ -61,11 +64,11 @@ function armarIndice() {
     const n = norm(p.rival);
     if ([...ya].some(x => x.includes(n) || n.includes(x))) return;
     ya.add(n);
-    items.push({ grupo: "Rivales", ico: "🆚", t: p.rival, sub: "Rival de esta temporada", href: "#/equipo/resultados/" + encodeURIComponent(p.rival), k: n });
+    items.push({ grupo: "Rivales", ico: "🆚", t: p.rival, sub: "Rival de esta temporada", href: "#/rivales/ficha/" + encodeURIComponent(p.rival), k: n });
   });
   if (DATA.arbitros && DATA.arbitros.tabla) DATA.arbitros.tabla.forEach(a => items.push({
     grupo: "Árbitros", ico: "🟨", t: a.arbitro,
-    sub: `${a.pj} ${a.pj === 1 ? "partido" : "partidos"} con Ferro · ${a.g}G ${a.e}E ${a.p}P`, href: "#/partido/arbitro", k: norm(a.arbitro),
+    sub: `${a.pj} ${a.pj === 1 ? "partido" : "partidos"} con Ferro · ${a.g}G ${a.e}E ${a.p}P`, href: "#/partido/arbitros", k: norm(a.arbitro),
   }));
   TODOS.forEach(x => items.push({
     grupo: "Hallazgos", ico: x.tipo === "novedad" ? "🆕" : "💡", t: x.titulo,

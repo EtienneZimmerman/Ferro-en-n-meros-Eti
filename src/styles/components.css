@@ -16,3 +16,37 @@ select { padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; b
 .ver-mas:hover { text-decoration: underline; }
 .t-corta-4 tr:nth-child(n+5), .t-corta-5 tr:nth-child(n+6), .t-corta-6 tr:nth-child(n+7), .t-corta-8 tr:nth-child(n+9), .t-corta-10 tr:nth-child(n+11) { display: none; }
 .cols-pocas .x { display: none; }
+
+/* compartir */
+.caja.comp { position: relative; }
+.caja.comp > h3, .caja.comp > .fila-sel, .caja.comp > .arb-cab, .caja.comp > .pz-cab { padding-right: 44px; }
+.btn-compartir { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--verde-txt); font-size: 16px; line-height: 1; cursor: pointer; opacity: .75; }
+.btn-compartir:hover, .btn-compartir:focus-visible { opacity: 1; border-color: var(--verde); }
+.menu-comp { position: absolute; top: 46px; right: 10px; z-index: 20; display: flex; flex-direction: column; min-width: 210px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.25); padding: 4px; }
+.menu-comp button { text-align: left; border: 0; background: none; padding: 9px 12px; border-radius: 7px; font-size: 14px; cursor: pointer; color: var(--ink); }
+.menu-comp button:hover, .menu-comp button:focus-visible { background: var(--chip); }
+.acciones-comp { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.acciones-comp button { border: 1px solid var(--verde); background: transparent; color: var(--verde-txt); border-radius: 999px; padding: 7px 14px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+.acciones-comp button:hover { background: var(--verde); color: #fff; }
+.toast { position: fixed; z-index: 200; left: 50%; bottom: 22px; transform: translate(-50%, 20px); background: #0b3d24; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+.placa-comp { position: fixed; left: -9999px; top: 0; padding: 22px; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; border: 6px solid var(--verde); display: flex; flex-direction: column; gap: 14px; }
+.placa-comp .pc-cab { display: flex; align-items: center; gap: 12px; }
+.placa-comp .pc-cab img { height: 46px; width: auto; }
+.placa-comp .pc-cab b { display: block; font-family: var(--display); font-weight: 800; font-size: 28px; text-transform: uppercase; line-height: 1; color: var(--verde-txt); }
+.placa-comp .pc-cab small { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.placa-comp .pc-pie { font-family: var(--mono); font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+.placa-comp .clon { margin: 0; }
+
+/* ficha del rival */
+.rv-sec { margin-top: 18px; }
+.rv-partidos { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; }
+.rv-partidos li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.rv-partidos a { font-weight: 700; min-width: 34px; }
+.rv-partidos .c { color: var(--muted); font-size: 13px; }
+.rv-partidos small { flex: 1 1 100%; color: var(--muted); font-size: 12.5px; }
+.rv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rv-chips span { border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; font-size: 13px; background: var(--chip); }
+.rv-etiqueta { margin: 16px 0 0; padding: 10px 14px; border-radius: var(--r); font-size: 14px; border: 1px solid var(--line); }
+.rv-etiqueta.fav { border-color: var(--ok); } .rv-etiqueta.bes { border-color: var(--bad); }
+.rv-prox { margin: 6px 0; }

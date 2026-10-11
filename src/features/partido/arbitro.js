@@ -3,7 +3,7 @@ import { tabla } from "../../lib/charts.js";
 import { $, el, f2, limitarTabla } from "../../lib/dom.js";
 
 export function initArbitro() {
-  const A = DATA.arbitros, sec = $('[data-tab="arbitro"]'); if (!A) { sec.hidden = true; return; }
+  const A = DATA.arbitros, sec = $('[data-tab="arbitro"]'); if (!A) { document.querySelectorAll('[data-tab="arbitro"], [data-tab="arbitros"]').forEach(t => { t.hidden = true; }); return; }
   const d = A.designado, nom = A.designado_nombre, hu = prox && prox.arbitro_humor;
   const caja = $("#arb-caja");
   if (!nom || !previaAlDia) { caja.hidden = true; }

@@ -42,9 +42,12 @@ src/
 
 ## Menú del sitio
 
-Inicio · Próximo partido (previa, pronóstico, pizarra, rival, chicanas, árbitro) · El equipo (tabla, resultados, goles,
-puntos y forma, 2026 vs 2025) · Jugadores (plantel, ficha, comparador, duplas y banco) · Rivales · Herramientas ·
-Comunidad (prode, trivia) · Hallazgos y datos.
+Inicio · Próximo partido (previa, pronóstico, pizarra, rival, chicanas, árbitro, árbitros de la temporada) · El equipo (tabla,
+resultados, goles, puntos, forma y rendimiento, 2026 vs 2025) · Jugadores (plantel, ficha, comparador, duplas y banco) ·
+Rivales (ficha de cada rival, historial, favoritos y bestias negras) · Herramientas · Comunidad (prode, trivia) · Hallazgos y datos.
+
+**Compartir:** cada tarjeta tiene un botón ⤴ para copiar un texto listo para tuitear, copiar el link o bajar una imagen con la
+marca del sitio (`src/components/compartir.js`). El detalle de cada hallazgo también tiene esas acciones.
 
 ## Actualización automática de datos
 

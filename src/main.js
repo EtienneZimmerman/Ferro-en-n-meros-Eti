@@ -5,6 +5,7 @@ import { FEATURES } from "./pages/index.js";
 import { initDesarrollo } from "./components/desarrollo.js";
 import { initBuscador } from "./search.js";
 import { initTema } from "./lib/theme.js";
+import { iniciarCompartir } from "./components/compartir.js";
 
 const BASE = import.meta.env.BASE_URL + "data/";
 // Los archivos de data/ se mezclan en un solo objeto DATA. Para sumar un grupo de datos, agregarlo acá.
@@ -32,6 +33,7 @@ async function arrancar() {
     try { if (v.init) v.init(); } catch (e) { console.error(`Error iniciando un módulo`, e); }
   }
   document.querySelector("#pie").textContent = `Datos al cierre de la fecha ${DATA.ultima_fecha} de la Primera Nacional 2026. Se actualiza automáticamente todos los días a las 9 y la noche de cada partido. Última actualización: ${DATA.actualizado}.`;
+  iniciarCompartir(app);
   initBuscador();
   iniciarRouter();
 }

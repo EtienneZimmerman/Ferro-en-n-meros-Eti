@@ -1,3 +1,4 @@
+import { accionesDelDetalle } from "./compartir.js";
 import { caraJug } from "./caras.js";
 import { DATA, prox, FOTOS_JUG } from "../ctx.js";
 import { CAT } from "../lib/consts.js";
@@ -27,6 +28,7 @@ export function abrirDesarrollo(x) {
   if (rel.length) { c.append(el("h4", null, "Hallazgos relacionados")); const r = el("div", "rel"); rel.forEach(h => { const d = el("div"); d.append(el("b", null, h.titulo)); if (h.detalle) d.append(document.createTextNode(h.detalle)); r.append(d); }); c.append(r); }
   if (jug) { const b = el("button", "pv-cerrar", `Ver la ficha completa de ${x.jugador} →`); b.type = "button"; b.addEventListener("click", () => { $("#des").close(); irAFicha(x.jugador); }); c.append(b); }
   if (x.url) { const a = el("a", null, "Ver la fuente →"); a.href = x.url; a.target = "_blank"; a.rel = "noopener"; c.append(a); }
+  c.append(accionesDelDetalle(x, c, x.titulo, location.origin + location.pathname + "#/datos/hallazgos"));
   if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
   c.scrollTop = 0; dlg.scrollTop = 0;
 }
