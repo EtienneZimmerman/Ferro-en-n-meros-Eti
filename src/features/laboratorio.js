@@ -2,7 +2,7 @@ import { caraJug } from "../components/caras.js";
 import { DATA, ult, ferroT, FOTOS_FW, PRODE_CFG, previaAlDia } from "../ctx.js";
 import { tabla } from "../lib/charts.js";
 import { FERRO } from "../lib/consts.js";
-import { $, el, S } from "../lib/dom.js";
+import { $, el, S, limitarTabla } from "../lib/dom.js";
 import { PS } from "../lib/prode-state.js";
 
 export function initLaboratorio() {
@@ -100,6 +100,7 @@ export function initLaboratorio() {
       if (b.partidos.length) { const d = el("details"); d.append(el("summary", null, b.jugador)); b.partidos.forEach(p => d.append(el("div", "nota", p))); a.append(d); } else a.append(document.createTextNode(b.jugador));
       tr.append(a, el("td", null, b.entradas), el("td", null, b.goles), el("td", null, "+" + b.rescatados), el("td", null, b.perdidos ? "-" + b.perdidos : "0")); t.append(tr); });
     $("#lb").append(t);
+    limitarTabla(t, 6);
   })();
 
   // --- tal fecha como esta ---

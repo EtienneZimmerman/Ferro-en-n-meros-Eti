@@ -10,3 +10,9 @@ select { padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; b
 .kpi { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
 .kpi .l { font-size: 11.5px; color: var(--muted); }
 .kpi .v { font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+/* "Ver más" */
+.ver-mas { align-self: flex-start; border: 0; background: none; color: var(--verde-txt); font-weight: 700; font-size: 13.5px; cursor: pointer; padding: 6px 0; text-align: left; }
+.ver-mas:hover { text-decoration: underline; }
+.t-corta-4 tr:nth-child(n+5), .t-corta-5 tr:nth-child(n+6), .t-corta-6 tr:nth-child(n+7), .t-corta-8 tr:nth-child(n+9), .t-corta-10 tr:nth-child(n+11) { display: none; }
+.cols-pocas .x { display: none; }

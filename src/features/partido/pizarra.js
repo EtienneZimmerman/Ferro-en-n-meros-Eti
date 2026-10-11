@@ -1,5 +1,5 @@
 import { prox, FOTOS_JUG } from "../../ctx.js";
-import { $, el, S } from "../../lib/dom.js";
+import { $, el, S, limitar } from "../../lib/dom.js";
 
 export function initPizarra() {
   const Z = prox && prox.pizarra; const box = $("#pizarra"); if (!box) return;
@@ -35,6 +35,7 @@ export function initPizarra() {
   });
   const li = (ul, arr) => (arr || []).forEach(([t, d]) => { const x = el("li"); x.append(el("b", null, t), el("span", null, d)); ul.append(x); });
   li($("#pz-ins"), Z.instrucciones); li($("#pz-deb"), Z.debilidades); li($("#pz-cui"), Z.cuidado);
+  limitar(pf, 3); limitar($("#pz-deb"), 3); limitar($("#pz-cui"), 3);
   $("#pz-cierre").textContent = Z.cierre || "";
   if (Z.frase && Z.frase.texto) { $("#pz-frase").hidden = false; $("#pz-fr-t").textContent = Z.frase.texto; $("#pz-fr-a").textContent = "— " + Z.frase.autor; $("#pz-fr-p").textContent = Z.frase.por_que || ""; }
 }

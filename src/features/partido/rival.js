@@ -1,6 +1,6 @@
 import { caraJug } from "../../components/caras.js";
 import { DATA, prox } from "../../ctx.js";
-import { $, el } from "../../lib/dom.js";
+import { $, el, limitar } from "../../lib/dom.js";
 
 export function initAten() {
   const A = prox && prox.ateneaid; if (!A) return;
@@ -14,6 +14,7 @@ export function initAten() {
     box.append(x);
   });
   const l = $("#aten-l"); (A.lecturas || []).forEach(([a, b]) => { const li = el("li"); li.append(el("b", null, a), el("span", null, b)); l.append(li); });
+  limitar(box, 4); limitar(l, 3);
 }
 
 export function initCarasConocidas() {
@@ -38,6 +39,7 @@ export function initCarasConocidas() {
   const cl = $("#cc-cl");
   C.clubes.slice(0, 10).forEach(([c, a, b]) => { const sp = el("span", null, `${c} · ${a.length}+${b.length}`); sp.title = `Nuestros: ${a.join(", ")}\nDe ${C.rival}: ${b.join(", ")}`; cl.append(sp); });
   cl.append(el("span", null, "N+M = nuestros + de ellos que pasaron por ahí"));
+  limitar(ex, 3); limitar(par, 4);
   cl.lastChild.style.border = "0";
 }
 

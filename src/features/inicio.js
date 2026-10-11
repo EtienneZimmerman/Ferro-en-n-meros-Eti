@@ -144,7 +144,7 @@ function proximoCard() {
 
 function ultimosHallazgos() {
   const box = $("#inicio-hall"); if (!box) return;
-  TODOS.filter(x => x.tipo !== "tabla" && x.tipo !== "novedad").slice(0, 6).forEach(x => box.append(tarjeta(x)));
+  TODOS.filter(x => x.tipo !== "tabla" && x.tipo !== "novedad").slice(0, 3).forEach(x => box.append(tarjeta(x)));
 }
 
 export default {

@@ -91,6 +91,7 @@ node scripts/actualizar.mjs --reconstruir   # vuelve a leer todas las síntesis 
 - **Una página nueva del menú**: agregar un `<div class="tab" data-tab="id" data-label="Nombre" data-desc="Qué responde">` en el `.html` del grupo (en `src/pages/`). El menú y el título se arman solos.
 - **Un grupo nuevo del menú**: crear `src/pages/x.html` y registrarlo en `GRUPOS` de `src/pages/index.js`. Si necesita lógica, crear un módulo en `src/features/` con `init()` y sumarlo a `FEATURES`.
 - **Un grupo de datos nuevo**: crear `public/data/x.json` y sumarlo a `ARCHIVOS` en `src/main.js`. Sus claves quedan disponibles en `DATA`.
+- **Que una página no muestre todo de golpe**: `limitar(lista, 3)`, `limitarTabla(tabla, 8)` y `columnasExtra(tabla)` (en `src/lib/dom.js`) dejan lo principal visible y el resto detrás de un «Ver más». Las columnas de una tabla se marcan como secundarias con `x: 1`.
 - **Que se encuentre en el buscador**: agregar el destino a `DESTINOS` en `src/search.js`.
 
 ## Links viejos

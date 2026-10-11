@@ -87,6 +87,7 @@ function mostrar() {
     const libres = ps.filter(p => !vacio(p));
     pagina = (libres.find(p => p.dataset.tab === pedida) || libres[0] || ps[0]).dataset.tab;
     ps.forEach(p => p.classList.toggle("on", p.dataset.tab === pagina));
+    sec.dataset.pagina = pagina;
   }
   document.querySelectorAll("#nav a").forEach(a => {
     const activo = a.dataset.grupo === g.id && (a.dataset.pagina ? a.dataset.pagina === pagina : true);

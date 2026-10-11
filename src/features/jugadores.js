@@ -3,7 +3,7 @@ import { tarjeta } from "../components/tarjeta.js";
 import { DATA, TODOS, nombres } from "../ctx.js";
 import { tip, showTip, hideTip, tabla } from "../lib/charts.js";
 import { RESC } from "../lib/consts.js";
-import { $, el, f2, miles, S } from "../lib/dom.js";
+import { $, el, f2, miles, S, limitar, columnasExtra } from "../lib/dom.js";
 
 let selF, A, B;
 
@@ -66,6 +66,7 @@ function ficha(n) {
   const mis = TODOS.filter(x => x.jugador === n || (x.titulo || "").includes(n + " "));
   if (!mis.length) fh.append(el("div", "d", "Todavía sin hallazgos destacados para este jugador."));
   mis.forEach(x => fh.append(tarjeta(x, { enFicha: true })));
+  limitar(fh, 3);
 }
 
 function comparar() {
@@ -87,11 +88,12 @@ export default {
   init() {
     const maxMin = Math.max(...DATA.jugadores.map(j => j.minutos));
     tabla("#t-jug", [
-  { k: "jugador", h: "Jugador", l: 1, render: (td, v) => { td.append(caraJug(v, "ch"), document.createTextNode(v)); } }, { k: "pj", h: "PJ" }, { k: "titular", h: "Tit." }, { k: "suplente", h: "Sup." },
+  { k: "jugador", h: "Jugador", l: 1, render: (td, v) => { td.append(caraJug(v, "ch"), document.createTextNode(v)); } }, { k: "pj", h: "PJ" }, { k: "titular", h: "Tit." }, { k: "suplente", h: "Sup.", x: 1 },
   { k: "minutos", h: "Minutos", render: (td, v) => { td.append(document.createTextNode(miles(v))); const b = el("span", "barra"); b.style.width = Math.round(v / maxMin * 60) + "px"; td.append(b); } },
-  { k: "goles", h: "Goles" }, { k: "goles_suplente", h: "Desde el banco" }, { k: "minutos_por_gol", h: "Min/gol" }, { k: "amarillas", h: "Amar." }, { k: "rojas", h: "Rojas" },
-  { k: "pts_partido_titular", h: "Pts/p con él", f: f2 }, { k: "pts_partido_sin_el", h: "Pts/p sin él", f: f2 }
+  { k: "goles", h: "Goles" }, { k: "goles_suplente", h: "Desde el banco", x: 1 }, { k: "minutos_por_gol", h: "Min/gol", x: 1 }, { k: "amarillas", h: "Amar." }, { k: "rojas", h: "Rojas" },
+  { k: "pts_partido_titular", h: "Pts/p con él", f: f2 }, { k: "pts_partido_sin_el", h: "Pts/p sin él", f: f2, x: 1 }
 ], DATA.jugadores, { sortable: true, sort: { k: "minutos", d: -1 } });
+    columnasExtra($("#t-jug"));
     selF = $("#sel-ficha"); nombres.forEach(n => selF.append(new Option(n, n)));
     selF.addEventListener("change", e => ficha(e.target.value));
     A = $("#cmp-a"); B = $("#cmp-b"); nombres.forEach(n => { A.append(new Option(n, n)); B.append(new Option(n, n)); });

@@ -2,7 +2,7 @@ import { tarjeta } from "../../components/tarjeta.js";
 import { DATA, prox, TODOS, previaAlDia } from "../../ctx.js";
 import { tabla } from "../../lib/charts.js";
 import { FERRO } from "../../lib/consts.js";
-import { $, el, S } from "../../lib/dom.js";
+import { $, el, S, limitar } from "../../lib/dom.js";
 import { fechaLarga } from "../../lib/fmt.js";
 
 // ---------- gráficos del manual de chicanas ----------
@@ -101,9 +101,12 @@ export function previa() {
   const ol = $("#claves"); ol.textContent = "";
   if (previaAlDia && DATA.claves && DATA.claves.length) { $("#claves-t").textContent = `Claves para ganarle a ${prox.rival}`; DATA.claves.forEach(k => { const li = el("li"); li.append(el("span", "kt", k.titulo), el("span", "kd", k.dato), el("span", "kp", k.porque)); ol.append(li); }); }
   else $("#claves-caja").hidden = true;
+  limitar(ol, 4);
   const hu = prox.humor;
   if (hu) { $("#humor-t").textContent = `Manual para bajar a ${prox.rival} de un hondazo`; $("#humor-i").textContent = hu.intro; graficosChicana(hu); const l = $("#humor-l"); l.textContent = ""; hu.puntos.forEach(([a, b]) => { const li = el("li"); li.append(el("b", null, a), el("span", null, b)); l.append(li); }); $("#humor-c").textContent = hu.cierre || ""; }
   else $("#humor-caja").hidden = true;
+  limitar($("#humor-l"), 4);
   const hp = $("#hall-previa"); hp.textContent = "";
   TODOS.filter(x => x.tipo === "tabla" || (prox && (x.titulo + (x.detalle || "")).includes(prox.rival))).slice(0, 6).forEach(x => hp.append(tarjeta(x)));
+  limitar(hp, 3);
 }

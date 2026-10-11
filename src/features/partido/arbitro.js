@@ -1,6 +1,6 @@
 import { DATA, prox, previaAlDia } from "../../ctx.js";
 import { tabla } from "../../lib/charts.js";
-import { $, el, f2 } from "../../lib/dom.js";
+import { $, el, f2, limitarTabla } from "../../lib/dom.js";
 
 export function initArbitro() {
   const A = DATA.arbitros, sec = $('[data-tab="arbitro"]'); if (!A) { sec.hidden = true; return; }
@@ -26,4 +26,5 @@ export function initArbitro() {
   }
   tabla("#t-arb", [{ k: "arbitro", h: "Árbitro", l: 1 }, { k: "pj", h: "PJ" }, { k: "g", h: "G" }, { k: "e", h: "E" }, { k: "p", h: "P" }, { k: "gf", h: "GF" }, { k: "gc", h: "GC" }, { k: "pts_p", h: "Pts/p", f: v => v.toLocaleString("es-AR", { minimumFractionDigits: 2 }) }, { k: "am_p", h: "Amar./p", f: v => v.toLocaleString("es-AR", { minimumFractionDigits: 2 }) }, { k: "ro", h: "Rojas" }],
     A.tabla, { sortable: true, sort: { k: "pj", d: -1 }, yo: r => r.arbitro === nom });
+  limitarTabla($("#t-arb"), 8);
 }

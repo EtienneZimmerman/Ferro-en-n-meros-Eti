@@ -136,3 +136,9 @@
 @media (max-width: 600px) { .bs-pie { display: none; } .buscador { margin-top: 12px; } }
 
 .aviso-previa { margin: 0; padding: 10px 14px; border: 1px dashed var(--warn); border-radius: var(--r); background: var(--panel); color: var(--ink); font-size: 14px; }
+
+/* la tarjeta del partido: completa en la Previa, compacta en el resto de las páginas del grupo */
+.view[data-view="partido"]:not([data-pagina="previa"]) .pv-res { padding: 12px 16px; gap: 4px; }
+.view[data-view="partido"]:not([data-pagina="previa"]) .pv-grid,
+.view[data-view="partido"]:not([data-pagina="previa"]) .pv-prode { display: none; }
+.view[data-view="partido"]:not([data-pagina="previa"]) .pv-vs { font-size: clamp(24px, 4vw, 34px); }

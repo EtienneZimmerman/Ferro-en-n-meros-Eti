@@ -1,7 +1,7 @@
 import { DATA, ult, ferroT, nombres } from "../ctx.js";
 import { tip, showTip, hideTip, tabla } from "../lib/charts.js";
 import { RESC, FERRO } from "../lib/consts.js";
-import { $, el, f2, miles, S } from "../lib/dom.js";
+import { $, el, f2, miles, S, limitarTabla } from "../lib/dom.js";
 
 function evol() {
   const c = $("#c-evol"); c.textContent = "";
@@ -105,6 +105,7 @@ export default {
     $("#tabla-p").textContent = DATA.tabla_fuente ? `Tabla de ${DATA.tabla_fuente.fuente} (${DATA.tabla_fuente.actualizada}).` : "";
     filtrar = filtroPartidos();
     historia(); initUltimas(); evol(); franjas();
+    limitarTabla($("#t-rend"), 6); limitarTabla($("#t-jt"), 8);
   },
   onShow(grupo, pagina, param) {
     if (grupo !== "equipo") return;
