@@ -1,6 +1,8 @@
 {
-  "ultima_fecha": 32,
-  "partidos_nuevos": [],
-  "actualizado": "11/10/2026 19:17",
-  "pendiente_editorial": false
+  "ultima_fecha": 33,
+  "partidos_nuevos": [
+    33
+  ],
+  "actualizado": "11/10/2026 20:15",
+  "pendiente_editorial": true
 }

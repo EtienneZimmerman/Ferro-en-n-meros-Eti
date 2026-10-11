@@ -29,7 +29,7 @@ const viewDe = (p) => +p.sintesis.match(/view=(\d+)/)[1];
 const dp = leer("public/data/partidos.json"), dj = leer("public/data/jugadores.json"), de = leer("public/data/equipo.json");
 const dt = leer("public/data/tabla.json"), dprox = leer("public/data/proximo.json");
 const CORR = leer("datos-fuente/correcciones.json", {}), AJUSTES = leer("datos-fuente/ajustes-jugadores.json", {});
-let GOLES = RECONSTRUIR ? {} : leer("datos-fuente/goles.json", {});
+let DETALLE = RECONSTRUIR ? {} : leer("datos-fuente/detalle.json", {});   // por fecha: goles, ingresos y tarjetas de Ferro
 
 let partidos = RECONSTRUIR ? [] : dp.partidos.slice(), participaciones = RECONSTRUIR ? [] : dp.participaciones.slice();
 const conocidos = dj.jugadores.map(j => j.jugador);
@@ -47,7 +47,7 @@ async function incorporar({ view, fecha, rival, n, nota = "" }) {
     if (!CORR[view]) console.log(`   Si el error es de FerroWeb, se corrige en datos-fuente/correcciones.json (clave "${view}").`);
     throw new Error("partido con errores");
   }
-  partidos.push({ ...r.partido, nota }); participaciones.push(...r.participaciones); GOLES[fecha] = r.goles;
+  partidos.push({ ...r.partido, nota }); participaciones.push(...r.participaciones); DETALLE[fecha] = { goles: r.goles, entradas: r.entradas, tarjetas: r.tarjetas };
   return r;
 }
 
@@ -84,11 +84,11 @@ async function main() {
 
   // 3) goles por minuto de los partidos que todavía no estén en el cache (primera ejecución)
   for (const p of partidos) {
-    if (GOLES[p.fecha]) continue;
+    if (DETALLE[p.fecha] && DETALLE[p.fecha].tarjetas) continue;
     const s = parseSintesis(await bajarSintesis(viewDe(p)));
     const r = s && procesarPartido(corregir(s, CORR[viewDe(p)]), { fecha: p.fecha, rival: p.rival, n: p.n, view: viewDe(p), conocidos });
     if (!r) { aviso(`No pude leer los goles de F${p.fecha}`); continue; }
-    GOLES[p.fecha] = r.goles; if (r.errores.length) aviso(`F${p.fecha}: ${r.errores.join("; ")}`);
+    DETALLE[p.fecha] = { goles: r.goles, entradas: r.entradas, tarjetas: r.tarjetas }; if (r.errores.length) aviso(`F${p.fecha}: ${r.errores.join("; ")}`);
   }
 }
 
@@ -103,6 +103,7 @@ for (const [nombre, aj] of Object.entries(AJUSTES)) {
   const j = J.find(x => x.jugador === nombre); if (!j) continue;
   for (const [campo, v] of Object.entries(aj)) if (campo !== "motivo") j[campo] += v;
 }
+const GOLES = Object.fromEntries(Object.entries(DETALLE).map(([f, d]) => [f, d.goles]));
 const equipoNuevo = { ...de, rendimiento: rendimiento(P, GOLES), franjas: franjas(P, GOLES) };
 
 // ---------- tabla de posiciones (FútbolTotal) ----------
@@ -125,7 +126,7 @@ const salidas = {
   "public/data/partidos.json": { partidos: P, participaciones },
   "public/data/jugadores.json": { jugadores: J },
   "public/data/equipo.json": equipoNuevo,
-  "datos-fuente/goles.json": GOLES,
+  "datos-fuente/detalle.json": DETALLE,
 };
 const tablaSinHora = { ultima_fecha: ultimaFecha, tabla, tabla_fuente: fuente };
 const hayCambioTabla = serializar({ ultima_fecha: dt.ultima_fecha, tabla: dt.tabla, tabla_fuente: dt.tabla_fuente }) !== serializar(tablaSinHora);
@@ -137,7 +138,7 @@ else if (SECO) console.log(`(modo seco) Cambiarían: ${cambiados.join(", ")}`);
 else {
   for (const [r, o] of Object.entries(salidas)) if (cambiados.includes(r)) writeFileSync(ruta(r), serializar(o));
   if (hayCambioTabla) writeFileSync(ruta("public/data/tabla.json"), serializar({ actualizado: ahoraArgentina(), ...tablaSinHora }));
-  else if (cambiados.some(r => r !== "datos-fuente/goles.json")) writeFileSync(ruta("public/data/tabla.json"), serializar({ ...dt, actualizado: ahoraArgentina() }));
+  else if (cambiados.some(r => r !== "datos-fuente/detalle.json")) writeFileSync(ruta("public/data/tabla.json"), serializar({ ...dt, actualizado: ahoraArgentina() }));
   writeFileSync(ruta("datos-fuente/estado.json"), JSON.stringify({ ultima_fecha: ultimaFecha, partidos_nuevos: nuevos.map(p => p.fecha), actualizado: ahoraArgentina(), pendiente_editorial: nuevos.length > 0 }, null, 2));
   console.log(`Archivos actualizados: ${cambiados.join(", ")}`);
 }

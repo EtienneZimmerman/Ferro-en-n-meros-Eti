@@ -50,9 +50,10 @@ export function procesarPartido(s, { fecha, rival, n, view, conocidos = [] }) {
   }
 
   const amarilla = new Set(), rojaT = {};
-  ev.amonestados.forEach(t => { if (t.error) errores.push(`Tarjeta ilegible: «${t.error}»`); else { const k = clave(t.nombre, "Amonestado"); if (k) amarilla.add(k); } });
+  const tarjetas = [];
+  ev.amonestados.forEach(t => { if (t.error) errores.push(`Tarjeta ilegible: «${t.error}»`); else { const k = clave(t.nombre, "Amonestado"); if (k) { amarilla.add(k); tarjetas.push({ t: t.t, pt: t.mitad === "pt", k, tipo: "a" }); } } });
   const esDT = (nombre) => buscar(nombre, [pl.dt.split(/\s+/).slice(-1)[0], ...pl.dt.split(/\s+/)]) !== null && !buscar(nombre, todos);
-  ev.expulsados.forEach(t => { if (t.error) errores.push(`Tarjeta ilegible: «${t.error}»`); else if (!esDT(t.nombre)) { const k = clave(t.nombre, "Expulsado"); if (k) rojaT[k] = t.t; } });
+  ev.expulsados.forEach(t => { if (t.error) errores.push(`Tarjeta ilegible: «${t.error}»`); else if (!esDT(t.nombre)) { const k = clave(t.nombre, "Expulsado"); if (k) { rojaT[k] = t.t; tarjetas.push({ t: t.t, pt: t.mitad === "pt", k, tipo: "r" }); } } });
 
   const goles = {};
   ev.goles.filter(g => !g.error && !g.ec).forEach(g => { const k = clave(g.nombre, "Gol"); if (k) goles[k] = (goles[k] || 0) + 1; });
@@ -79,10 +80,10 @@ export function procesarPartido(s, { fecha, rival, n, view, conocidos = [] }) {
     arbitro: s.arbitro, sintesis: urlSintesis(view), nota: "",
   };
   const golesCronologia = [
-    ...ev.goles.filter(g => !g.error).map(g => ({ t: g.t, a: "f", pt: g.mitad === "pt" })),
-    ...evR.goles.filter(g => !g.error).map(g => ({ t: g.t, a: "r", pt: g.mitad === "pt" })),
+    ...ev.goles.filter(g => !g.error).map(g => ({ t: g.t, min: g.min, mitad: g.mitad, a: "f", pt: g.mitad === "pt", nombre: g.ec ? g.nombre : (buscar(g.nombre, todos) ?? g.nombre), ec: !!g.ec })),
+    ...evR.goles.filter(g => !g.error).map(g => ({ t: g.t, min: g.min, mitad: g.mitad, a: "r", pt: g.mitad === "pt", nombre: g.nombre, ec: !!g.ec })),
   ].sort((a, b) => a.t - b.t);
-  return { partido, participaciones, goles: golesCronologia, avisos, errores };
+  return { partido, participaciones, goles: golesCronologia, entradas: { ...entrada }, tarjetas: tarjetas.sort((a, b) => a.t - b.t), avisos, errores };
 }
 
 // ---------- con todos los partidos ----------
