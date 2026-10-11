@@ -18,7 +18,7 @@
 
   <header class="app-bar">
     <div class="app-bar-in">
-      <button type="button" class="icono" id="btn-menu" aria-label="Mostrar u ocultar el menú" aria-expanded="false" aria-controls="side"><span aria-hidden="true">☰</span><span class="txt">Menú</span></button>
+      <button type="button" class="icono" id="btn-menu-movil" aria-label="Abrir el menú" aria-expanded="false" aria-controls="side"><span aria-hidden="true">☰</span></button>
       <a class="marca" href="#/" aria-label="Ferro en números, ir al inicio">
         <img class="escudo" src="/img/escudo.png" alt="">
         <span class="marca-t"><b>Ferro en números</b><small>FerroWeb · Hablemos de Ferro</small></span>
@@ -32,7 +32,10 @@
   </header>
 
   <div class="layout">
-    <aside class="side" id="side" aria-label="Menú del sitio"><nav id="nav" aria-label="Secciones del sitio"></nav></aside>
+    <aside class="side" id="side" aria-label="Menú del sitio">
+      <button type="button" class="side-toggle" id="btn-menu" aria-label="Ocultar el menú" aria-expanded="true" aria-controls="nav"><span class="barras" aria-hidden="true">☰</span><span class="txt">Menú</span></button>
+      <nav id="nav" aria-label="Secciones del sitio"></nav>
+    </aside>
     <div class="side-fondo" id="side-fondo"></div>
     <main id="app" class="wrap"><p class="cargando" role="status">Cargando los números…</p></main>
   </div>

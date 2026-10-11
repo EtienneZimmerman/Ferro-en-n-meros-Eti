@@ -110,22 +110,24 @@ const esMovil = () => matchMedia("(max-width: 900px)").matches;
 const guardado = { leer: () => { try { return localStorage.getItem("fen_menu"); } catch (e) { return null; } }, poner: (v) => { try { localStorage.setItem("fen_menu", v); } catch (e) { /* sin almacenamiento */ } } };
 
 function actualizarBoton() {
-  const b = $("#btn-menu"); if (!b) return;
   const visible = esMovil() ? document.body.classList.contains("menu-abierto") : !document.body.classList.contains("menu-oculto");
-  b.setAttribute("aria-expanded", String(visible));
+  const dentro = $("#btn-menu"), movil = $("#btn-menu-movil");
+  if (dentro) { dentro.setAttribute("aria-expanded", String(visible)); dentro.setAttribute("aria-label", visible ? "Ocultar el menú" : "Mostrar el menú"); }
+  if (movil) { movil.setAttribute("aria-expanded", String(visible)); movil.setAttribute("aria-label", visible ? "Cerrar el menú" : "Abrir el menú"); }
 }
 function cerrarMenu() { document.body.classList.remove("menu-abierto"); actualizarBoton(); }
 
 function iniciarMenu() {
   if (guardado.leer() === "oculto") document.body.classList.add("menu-oculto");
-  const b = $("#btn-menu");
-  b.addEventListener("click", () => {
+  const alternar = () => {
     if (esMovil()) document.body.classList.toggle("menu-abierto");
     else { const oculto = document.body.classList.toggle("menu-oculto"); guardado.poner(oculto ? "oculto" : "visible"); }
     actualizarBoton();
-  });
+  };
+  $("#btn-menu").addEventListener("click", alternar);
+  $("#btn-menu-movil").addEventListener("click", alternar);
   $("#side-fondo").addEventListener("click", cerrarMenu);
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("menu-abierto")) { cerrarMenu(); b.focus(); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("menu-abierto")) { cerrarMenu(); $("#btn-menu-movil").focus(); } });
   matchMedia("(max-width: 900px)").addEventListener("change", () => { cerrarMenu(); });
   actualizarBoton();
 }

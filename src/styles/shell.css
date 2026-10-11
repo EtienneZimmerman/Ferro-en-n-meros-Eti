@@ -23,12 +23,12 @@
 .acciones { margin-left: auto; }
 .app-bar :focus-visible { outline-color: #fff; }
 
-#btn-menu { font-size: 18px; line-height: 1; }
-#btn-menu .txt { font-size: 14px; }
+#btn-menu-movil { display: none; font-size: 18px; line-height: 1; }
 @media (max-width: 900px) {
   .app-bar-in { padding-block: 6px; }
   .marca-t small, .acciones .fwlogo { display: none; }
   .icono .txt, .icono kbd { display: none; }
+  #btn-menu-movil { display: inline-flex; }
 }
 
 /* ---------- contenedor y vistas ---------- */
@@ -52,14 +52,22 @@
 .nuevo { margin-left: auto; font-size: 9.5px; font-weight: 800; letter-spacing: .06em; background: #f2b640; color: #3a2600; border-radius: 4px; padding: 1px 5px; }
 .side-fondo { display: none; }
 
+/* el botón vive en el lateral: abierto muestra solo las tres líneas; cerrado, el lateral queda como una barra angosta con «Menú» */
+.side-toggle { position: sticky; top: 0; z-index: 2; background: var(--side-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 44px; min-height: 40px; margin-bottom: 14px; border: 1px solid var(--side-line); border-radius: 10px; background: transparent; color: var(--side-tit); cursor: pointer; padding: 4px 0; }
+.side-toggle:hover { background: var(--side-hover); }
+.side-toggle .barras { font-size: 21px; line-height: 1; }
+.side-toggle .txt { display: none; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 @media (min-width: 901px) {
-  .menu-oculto .layout { grid-template-columns: minmax(0, 1fr); }
-  .menu-oculto .side { display: none; }
+  .menu-oculto .layout { grid-template-columns: 68px minmax(0, 1fr); }
+  .menu-oculto .side { padding-inline: 10px; overflow: hidden; }
+  .menu-oculto .side nav { display: none; }
+  .menu-oculto .side-toggle { width: 48px; }
+  .menu-oculto .side-toggle .txt { display: block; }
 }
 @media (max-width: 900px) {
   .layout { display: block; }
   .wrap { padding: 18px 16px 56px; }
-  .side { position: fixed; z-index: 40; top: 0; left: 0; bottom: 0; height: auto; width: min(290px, 84vw); background: var(--side-bg); border-right: 1px solid var(--side-line); box-shadow: 0 0 40px rgba(0,0,0,.35); padding-top: 70px; transform: translateX(-102%); transition: transform .2s ease; }
+  .side { position: fixed; z-index: 40; top: 0; left: 0; bottom: 0; height: auto; width: min(290px, 84vw); background: var(--side-bg); border-right: 1px solid var(--side-line); box-shadow: 0 0 40px rgba(0,0,0,.35); padding-top: 16px; transform: translateX(-102%); transition: transform .2s ease; }
   .menu-abierto .side { transform: none; }
   .menu-abierto .side-fondo { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(5, 20, 12, .5); }
   .menu-abierto { overflow: hidden; }
