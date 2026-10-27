@@ -57,3 +57,23 @@ test("tabla de FútbolTotal: lee el grupo donde está Ferro", () => {
   const r = parseTabla(tabla("Otro Club") + tabla("Ferro Carril Oeste"));
   assert.equal(r[0].equipo, "Ferro Carril Oeste"); assert.equal(r[0].pts, 62); assert.equal(r[0].dg, 9);
 });
+
+test("F34: dos jugadores con el mismo apellido en el banco (García F. y García S.) no frenan la actualización", () => {
+  const base = parseSintesis(html(788));
+  const jug = (num, nombre) => ({ num, nombre, clave: nombre.split(",")[0] });
+  const s = {
+    ...base, local: "Ferro Carril Oeste", visitante: "Racing (Córdoba)", gl: 1, gv: 0,
+    plantel: { ...base.plantel, local: { dt: "X", jugadores: ["Monetti", "Kihm", "Tévez", "Canto", "Ozuna", "Kabalín", "Obradovich", "Hoyos", "González", "Reniero", "Parisi"].map((n, i) => jug(i + 1, `${n}, X`)) } },
+    eventos: { ...base.eventos, local: {
+      suplentes: ["Ruiz", "Corda", "Castellani", "García", "Dening", "García", "Marra"],
+      goles: [{ min: 12, mitad: "st", t: 57, nombre: "Parisi", penal: true, ec: false }],
+      amonestados: [], expulsados: [],
+      cambios: [{ min: 28, mitad: "st", t: 73, nombres: ["García F.", "Marra", "Reniero", "Kabalín"] }],
+    }, visitante: { suplentes: [], goles: [], amonestados: [], expulsados: [], cambios: [] } },
+  };
+  const r = procesarPartido(s, { fecha: 34, rival: "Racing (Córdoba)", n: 34, view: 792, conocidos: CONOCIDOS });
+  assert.deepEqual(r.errores, []);
+  const por = Object.fromEntries(r.participaciones.map(p => [p.jugador, p.minutos]));
+  assert.equal(por["García"], 17); assert.equal(por["Marra"], 17);
+  assert.ok(r.avisos.some(a => /dos jugadores «García»/.test(a)));
+});

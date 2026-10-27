@@ -23,10 +23,14 @@ export function procesarPartido(s, { fecha, rival, n, view, conocidos = [] }) {
   // FerroWeb a veces escribe mal un apellido en la formación: se lo lleva al nombre que ya usa el sitio.
   const canonico = (k) => { const c = buscar(k, conocidos); if (!c && conocidos.length) avisos.push(`Jugador nuevo o nombre dudoso: «${k}»`); return c ?? k; };
   const titulares = pl.jugadores.map(j => canonico(j.clave)), banco = ev.suplentes.map(canonico);
-  const todos = [...titulares, ...banco];
+  // Dos jugadores pueden compartir apellido (García, Franco y García, Santiago): la clave del sitio es el apellido,
+  // así que se buscan sin repetir; si no, «García F.» coincidiría con dos candidatos y no se resolvería nunca.
+  const todos = [...new Set([...titulares, ...banco])];
+  const homonimos = new Set(banco.filter((k, i) => banco.indexOf(k) !== i || titulares.includes(k)));
   const clave = (nombre, contexto) => {
     const k = buscar(nombre, todos);
     if (!k) avisos.push(`${contexto}: no se encontró a «${nombre}» en el plantel de Ferro`);
+    else if (homonimos.has(k)) avisos.push(`${contexto}: hay dos jugadores «${k}» en el plantel; «${nombre}» se cuenta como ${k}`);
     return k;
   };
 
